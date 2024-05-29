@@ -16,10 +16,13 @@ public class ClassScanner {
         List<Class<?>> classes = new ArrayList<>();
         File directory = null;
         try {
+            System.out.println(directoryPath);
+            System.out.println(resource.toURI());
             if (resource != null)
                 directory = new File(resource.toURI());
         } catch (URISyntaxException e) {
             Logger.getLogger().warning("NO WAY");
+            return classes;
         }
 
         if (directory == null || !directory.exists()) {
@@ -30,7 +33,7 @@ public class ClassScanner {
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    classes.addAll(findClasses(file.getAbsolutePath(), packageName + "." + file.getName()));
+                    classes.addAll(findClasses(packageName.replace(".", "/") + "/" + file.getName(), packageName + "." + file.getName()));
                 } else if (file.getName().endsWith(".class")) {
                     String className = packageName + '.' + file.getName().substring(0, file.getName().length() - 6);
                     classes.add(Class.forName(className));
