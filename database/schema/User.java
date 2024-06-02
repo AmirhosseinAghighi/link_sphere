@@ -25,10 +25,12 @@ public class User {
     @Column(name = "last_name")
     String lastName;
 
-    public User(String username, String mail, String password) {
+    public User(String username, String mail, String password, String firstName, String lastName) {
         this.username = username;
         this.mail = mail;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public Long getId() {
