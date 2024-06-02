@@ -26,7 +26,7 @@ public class Signup {
     private static Logger logger;
     private static DAO dao;
 
-
+    // TODO: ADD EMAIL CONFIRMATION WITH OPT CODE SENT TO MAIL WITH HTML TEMPLATE.
     @Post
     public void post(Req req, Res res) {
         try {
@@ -37,29 +37,29 @@ public class Signup {
             String firstname = reqData.getFirstname();
             String lastname = reqData.getLastname();
 
-            logger.info("New User Sign Up Request Received {", username, " ", mail, " ", password, "}");
+            logger.debug("New User Sign Up Request Received {", username, " ", mail, " ", password, "}");
 
-            if (username.isBlank() || mail.isBlank() || password.isBlank() || firstname.isBlank() || password.length() < 8) {
-                logger.info("New User Sign Up Request Received And Ignored! | message: a field was blank!", "ip: ", req.getIp());
+            if (username.isBlank() || mail.isBlank() || password.isBlank() || firstname.isBlank() || password.length() < 8) { // check form validation
+                logger.debug("New User Sign Up Request Received And Ignored! | message: a field was blank!", "ip: ", req.getIp());
                 res.sendError(400, "Bad Request");
                 return;
             }
 
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-            var user = new User(username, mail, hashedPassword, firstname, lastname);
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt()); // hash password to make it secure to save
+            var user = new User(username, mail, hashedPassword, firstname, lastname); // create user instance to save it in database.
 
-            try {
-                dao.createNewUser(user);
+            try { // put it in try catch to catch exception and send it to client
+                dao.createNewUser(user); // create new one and save it.
             } catch (ConstraintViolationException error) {
-                if (error.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
-                    res.sendError(400, "username or email already exist.");
-                    return;
+                if (error.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) { // catch duplicated username or mail
+                    res.sendError(400, "username or email already exist."); // send error with 400 status code ( Bad Request )
+                    return; // return to avoid sending another response
                 }
             }
-            res.sendMessage("user signed up successfully");
+            res.sendMessage("user signed up successfully"); // if passed the user creation, send the result to client. TODO: login and pass the jwt token to user
             logger.info("New user signed up successfully");
-        } catch (Exception e) {
-            logger.info("New User Sign Up Request Received And Ignored! | message: ", e.getMessage(), "ip: ", req.getIp());
+        } catch (Exception e) { // catch any error received like username or mail or password or first name were null.
+            logger.debug("New User Sign Up Request Received And Ignored! | message: ", e.getMessage(), "ip: ", req.getIp());
             res.sendError(400, "Bad Request");
         }
     }
@@ -67,7 +67,7 @@ public class Signup {
     @Get
     public void get(Req req, Res res) {
         res.send(200, "Hi! \nThis is the Sign Up Page :)");
-    }
+    } // currently, nothing to send
 }
 
 class signUpUser {
