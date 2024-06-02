@@ -1,8 +1,10 @@
 package org.linkSphere.core;
 
-import org.linkSphere.annotations.http.Endpoint;
+import com.google.gson.Gson;
+import org.linkSphere.annotations.http.*;
 import org.linkSphere.annotations.UseLogger;
-import org.linkSphere.annotations.http.Get;
+import org.linkSphere.annotations.useDAO;
+import org.linkSphere.annotations.useGson;
 import org.linkSphere.core.startupHandlers.ClassScanner;
 import org.linkSphere.core.startupHandlers.Injector;
 import org.linkSphere.exceptions.criticalException;
@@ -21,6 +23,7 @@ public class Sphere {
     private static boolean debug = false;
     private RequestHandler requestHandler;
     private HttpHandler server;
+    private static Gson gson;
 
     public static void setDebug(boolean debug) {
         Sphere.debug = debug;
@@ -28,6 +31,10 @@ public class Sphere {
 
     public static boolean isDebug() {
         return debug;
+    }
+
+    public static Gson getGson() {
+        return gson;
     }
 
     public static Sphere start(int port, Class mainClass) throws duplicateException, criticalException {
@@ -44,8 +51,9 @@ public class Sphere {
 
     public Sphere(int port, Class mainClass) throws duplicateException {
         requestHandler = new RequestHandler();
-        server = new HttpHandler(port, requestHandler);
+        gson = new Gson();
         AnnotationProcessor(mainClass.getPackage().getName().replace(".", "/"), mainClass.getPackage().getName());
+        server = new HttpHandler(port, requestHandler);
     }
 
 
@@ -57,8 +65,17 @@ public class Sphere {
                 if (clazz.isAnnotationPresent(UseLogger.class)) {
                     Injector.injectLogger(clazz);
                 }
+
+                if (clazz.isAnnotationPresent(useGson.class)) {
+                    Injector.injectGson(clazz);
+                }
+
                 if (clazz.isAnnotationPresent(Endpoint.class)) {
                     resolveEndpoints(clazz);
+                }
+
+                if (clazz.isAnnotationPresent(useDAO.class)) {
+                    Injector.injectDAO(clazz);
                 }
             }
         } catch (ClassNotFoundException e) {
@@ -73,12 +90,33 @@ public class Sphere {
     private void resolveEndpoints(Class clazz) {
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
+            RequestMethodTypes methodType = null;
             if (method.isAnnotationPresent(Get.class)) {
+                methodType = RequestMethodTypes.GET;
+            }
+
+            if (method.isAnnotationPresent(Post.class)) {
+                methodType = RequestMethodTypes.POST;
+            }
+
+            if (method.isAnnotationPresent(Delete.class)) {
+                methodType = RequestMethodTypes.DELETE;
+            }
+
+            if (method.isAnnotationPresent(Head.class)) {
+                methodType = RequestMethodTypes.HEAD;
+            }
+
+            if (method.isAnnotationPresent(Update.class)) {
+                methodType = RequestMethodTypes.UPDATE;
+            }
+
+            if (methodType != null) {
                 if (method.getParameterCount() != 2) continue;
                 String path = ((Endpoint) clazz.getAnnotation(Endpoint.class)).value();
                 try {
                     logger.debug("Resolving endpoint method ", method.getName(), " with path ", path);
-                    requestHandler.addPath(path, RequestMethodTypes.GET, method);
+                    requestHandler.addPath(path, methodType, method);
                 } catch (duplicateException e) {
                     logger.warning("Ignoring duplicated path: ", path);
                 }
