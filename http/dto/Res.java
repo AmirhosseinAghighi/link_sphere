@@ -35,4 +35,12 @@ public class Res {
             throw new RuntimeException(e);
         }
     }
+
+    public void sendError(int statusCode, String message) throws RuntimeException {
+        send(statusCode, String.format("{\"code\": %d, \"message\": \"%s\"}", statusCode, message));
+    }
+
+    public void sendMessage(String message) throws RuntimeException {
+        sendError(200, message);
+    }
 }

@@ -34,6 +34,12 @@ public class RequestHandler implements HttpHandler{
             runPath(req.getUrl(), req.getMethod(),req, res);
         } catch (notFoundException e) {
             logger.error("Request not found: " + req.getUrl());
+            try {
+                runPath("/404", RequestMethodTypes.GET, req, res);
+            } catch (notFoundException ex) {
+                logger.info("There's not any registered 404 path, sending default page");
+                res.send(404, "404 - Not Found");
+            }
         }
     }
 
@@ -104,12 +110,11 @@ public class RequestHandler implements HttpHandler{
         try {
             runPath(path, methodType, new HashMap<String, String>(), req, res);
         } catch (notFoundException e) {
-
             throw e;
         }
     }
 
-    public void runPath(String path, RequestMethodTypes methodType, HashMap<String, String> params, Req req, Res res) throws notFoundException {
+    private void runPath(String path, RequestMethodTypes methodType, HashMap<String, String> params, Req req, Res res) throws notFoundException {
 //        if (path.isEmpty()) {
 //            var currentPath = paths.get(path);
 //        }
@@ -143,7 +148,12 @@ public class RequestHandler implements HttpHandler{
                 try {
                     method.invoke(InstanceCreator.getInstanceCreator().getInstance(clazz), req, res);
                 } catch (Exception e) {
-                    logger.critical(e.getMessage());
+                    String message = e.getMessage();
+                    if (message == null) {
+                        logger.critical(e.getCause().getMessage());
+                    } else {
+                        logger.critical(e.getMessage());
+                    }
                 }
                 return;
             } else {
