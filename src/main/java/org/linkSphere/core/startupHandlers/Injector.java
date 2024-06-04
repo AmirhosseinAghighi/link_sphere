@@ -5,9 +5,30 @@ import org.linkSphere.database.DAO;
 import org.linkSphere.util.Logger;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.HashMap;
 
 public class Injector {
+    private static final HashMap<String, Object> dependencies = new HashMap<>();
+
+    public static void createInstance(String name, Class clazz) {
+        try {
+            dependencies.put(name, clazz.newInstance());
+        } catch (Exception e) {
+            Logger.getLogger().critical(e.getMessage());
+        }
+    }
+
+    public static void injectDependencies(Field field, String key) throws IllegalAccessException {
+        field.setAccessible(true);
+        try {
+            field.set(field.getClass(), dependencies.get(key));
+        } catch (IllegalAccessException e) {
+            throw e;
+        }
+    }
+
+
+
     public static void injectLogger(Class clazz) throws NoSuchFieldException, IllegalAccessException {
         Field loggerField = null;
         try {
@@ -46,4 +67,6 @@ public class Injector {
             throw e;
         }
     }
+
+
 }

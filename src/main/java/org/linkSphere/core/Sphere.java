@@ -1,10 +1,8 @@
 package org.linkSphere.core;
 
 import com.google.gson.Gson;
+import org.linkSphere.annotations.*;
 import org.linkSphere.annotations.http.*;
-import org.linkSphere.annotations.UseLogger;
-import org.linkSphere.annotations.useDAO;
-import org.linkSphere.annotations.useGson;
 import org.linkSphere.core.startupHandlers.ClassScanner;
 import org.linkSphere.core.startupHandlers.Injector;
 import org.linkSphere.exceptions.criticalException;
@@ -14,6 +12,7 @@ import org.linkSphere.http.RequestHandler;
 import org.linkSphere.http.RequestMethodTypes;
 import org.linkSphere.util.Logger;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -76,6 +75,16 @@ public class Sphere {
 
                 if (clazz.isAnnotationPresent(useDAO.class)) {
                     Injector.injectDAO(clazz);
+                }
+
+                if (clazz.isAnnotationPresent(Dependency.class)) {
+                    Injector.createInstance(clazz.getAnnotation(Dependency.class).name(), clazz);
+                }
+
+                for (Field field : clazz.getDeclaredFields()) {
+                    if (field.isAnnotationPresent(Inject.class)) {
+                        Injector.injectDependencies(field, field.getAnnotation(Inject.class).dependency());
+                    }
                 }
             }
         } catch (ClassNotFoundException e) {

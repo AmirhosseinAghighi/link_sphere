@@ -20,5 +20,6 @@ public class HttpHandler {
         server.createContext("/", reqHandler);
         server.setExecutor(java.util.concurrent.Executors.newCachedThreadPool()); // set executor to be parallel
         server.start();
+        Logger.getLogger().debug("HttpHandler started on port {}", port);
     }
 }

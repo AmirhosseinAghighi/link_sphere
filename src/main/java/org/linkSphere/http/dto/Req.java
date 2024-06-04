@@ -3,7 +3,7 @@ package org.linkSphere.http.dto;
 import com.sun.net.httpserver.HttpExchange;
 import org.linkSphere.http.RequestMethodTypes;
 
-import java.io.IOException;
+import java.net.HttpCookie;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +20,7 @@ public class Req {
     private String query;
     private String requestBody;
     private Map<String, String> cookies;
+    private String userAgent;
 
     public Req(HttpExchange exchange) {
         String method = exchange.getRequestMethod();
@@ -58,6 +59,7 @@ public class Req {
         this.requestBody = scanner.hasNext() ? scanner.next() : "";
 
         this.cookies = parseCookies(exchange.getRequestHeaders().getFirst("Cookie"));
+        this.userAgent = exchange.getRequestHeaders().getFirst("User-Agent");
     }
 
     private Map<String, String> parseCookies(String cookieHeader) {
@@ -65,15 +67,12 @@ public class Req {
         if (cookieHeader != null && !cookieHeader.isEmpty()) {
             String[] cookiePairs = cookieHeader.split("; ");
             for (String cookiePair : cookiePairs) {
-                String[] keyValue = cookiePair.split("=");
-                if (keyValue.length == 2) {
-                    cookies.put(keyValue[0], keyValue[1]);
-                }
+                HttpCookie cookie = HttpCookie.parse(cookiePair).getFirst();
+                cookies.put(cookie.getName(), cookie.getValue());
             }
         }
         return cookies;
     }
-
 
     public RequestMethodTypes getMethod() {
         return method;
@@ -109,5 +108,9 @@ public class Req {
 
     public Map<String, String> getCookies() {
         return cookies;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
     }
 }
