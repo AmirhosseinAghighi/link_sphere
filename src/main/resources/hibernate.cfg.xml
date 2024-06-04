@@ -18,6 +18,11 @@
         <property name="hbm2ddl.auto">update</property>
         <property name="hibernate.current_session_context_class">thread</property>
         <!-- name of annotated entity class -->
-        <mapping class="org.linkSphere.database.schema.User"/>
+        <mapping class="app.database.schema.User"/>
+        <mapping class="app.database.schema.Profile"/>
+        <mapping class="app.database.schema.Token"/>
+        <mapping class="app.database.schema.Education"/>
+        <mapping class="app.database.schema.Job"/>
+        <mapping class="app.database.schema.Company"/>
     </session-factory>
 </hibernate-configuration>

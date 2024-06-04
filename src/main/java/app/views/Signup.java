@@ -1,30 +1,29 @@
 package app.views;
 
+import app.database.UserDAO;
 import com.google.gson.Gson;
-import com.google.gson.stream.MalformedJsonException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.linkSphere.annotations.Inject;
 import org.linkSphere.annotations.http.Endpoint;
 import org.linkSphere.annotations.http.Get;
 import org.linkSphere.annotations.http.Post;
-import org.linkSphere.annotations.useDAO;
 import org.linkSphere.annotations.useGson;
 import org.linkSphere.annotations.UseLogger;
 import org.linkSphere.database.DAO;
-import org.linkSphere.database.schema.User;
+import app.database.schema.User;
 import org.linkSphere.http.dto.Req;
 import org.linkSphere.http.dto.Res;
-import org.linkSphere.security.Session;
 import org.linkSphere.util.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 
 @Endpoint("/signup")
 @useGson
 @UseLogger
-@useDAO
 public class Signup {
     private static Gson gson;
     private static Logger logger;
-    private static DAO dao;
+    @Inject(dependency = "userDAO")
+    private static UserDAO userDAO;
 
     // TODO: ADD EMAIL CONFIRMATION WITH OPT CODE SENT TO MAIL WITH HTML TEMPLATE.
     @Post
@@ -49,7 +48,7 @@ public class Signup {
             var user = new User(username, mail, hashedPassword, firstname, lastname); // create user instance to save it in database.
 
             try { // put it in try catch to catch exception and send it to client
-                dao.createNewUser(user); // create new one and save it.
+                userDAO.createNewUser(user); // create new one and save it.
             } catch (ConstraintViolationException error) {
                 if (error.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) { // catch duplicated username or mail
                     res.sendError(400, "username or email already exist."); // send error with 400 status code ( Bad Request )
