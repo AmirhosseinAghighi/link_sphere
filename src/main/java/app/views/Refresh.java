@@ -25,7 +25,7 @@ public class Refresh {
         String refreshToken = req.getCookies().get("refreshToken");
         Claims refreshTokenClaims = JWT.parseToken(refreshToken);
         long userID = Long.parseLong(refreshTokenClaims.getSubject());
-        if (refreshTokenClaims.getExpiration().getTime() - now.getTime() < 1 * 24 * 60 * 60 * 1000) {
+        if (refreshTokenClaims.getExpiration().getTime() - now.getTime() < 7 * 24 * 60 * 60 * 1000) {
             String newRefreshToken = Auth.generateRefreshToken(userID, (String) refreshTokenClaims.get("username"));
             res.addCookie("refreshToken", newRefreshToken, true);
 
@@ -34,19 +34,23 @@ public class Refresh {
             } catch (NoSuchElementException e) {
                 res.addCookie("refreshToken", null, true);
                 res.addCookie("accessToken", null, true);
-                res.sendError(403, "Invalid refresh token");
+                res.sendError(401, "Invalid refresh token");
             }
 
         }
 
-        Claims accessToken = JWT.parseToken(req.getCookies().get("accessToken"));
-        Date accessTokenExp = accessToken.getExpiration();
-        if (accessTokenExp.getTime() - now.getTime() < 60 * 1000) {
-            String newAccessToken = Auth.generateAccessToken(userID);
-            res.addCookie("accessToken", newAccessToken, true);
-            res.sendMessage("Access token renewed.");
-        } else {
-            res.sendMessage("Access token has enough time");
+        String currentAccessToken = req.getCookies().get("accessToken");
+        if (Auth.isTokenValid(currentAccessToken)) {
+            Claims accessToken = JWT.parseToken(currentAccessToken);
+            Date accessTokenExp = accessToken.getExpiration();
+            if (accessTokenExp.getTime() - now.getTime() < 60 * 1000) {
+                res.sendError(403, "Access token has enough time");
+                return;
+            }
         }
+
+        String newAccessToken = Auth.generateAccessToken(userID);
+        res.addCookie("accessToken", newAccessToken, true);
+        res.sendMessage("Access token renewed.");
     }
 }

@@ -53,16 +53,16 @@ public class Auth {
     }
 
     public static boolean isAuthorized(Map<String, String> cookies) {
-        String accessToken = cookies.get("accessToken");
-        if (accessToken == null) return false;
-        boolean res = JWT.verifyToken(accessToken);
-        return res;
+        return isTokenValid(cookies.get("accessToken"));
     }
 
     public static boolean isRefreshTokenValid(Map<String, String> cookies) {
-        String refreshToken = cookies.get("refreshToken");
-        if (refreshToken == null) return false;
-        boolean res = JWT.verifyToken(refreshToken);
+        return isTokenValid(cookies.get("refreshToken"));
+    }
+
+    public static boolean isTokenValid(String token) {
+        if (token == null) return false;
+        boolean res = JWT.verifyToken(token);
         return res;
     }
 }
