@@ -33,9 +33,13 @@ public class Res {
         responseHeaders.add("Access-Control-Allow-Methods", "GET, POST");
     }
 
-    public void send(int statusCode, String response) throws RuntimeException {
+    public void send(int statusCode, String response) {
+        send(statusCode, response, "application/json");
+    }
+
+    public void send(int statusCode, String response, String contentType) throws RuntimeException {
         addDefaultResponseHeaders();
-        responseHeaders.add("Content-Type", "application/json");
+        responseHeaders.add("Content-Type", contentType);
 
         if (cookies != null) {
             for (String cookie : cookies) {
@@ -88,6 +92,15 @@ public class Res {
             throw e;
         }
         outputStream.close();
+    }
+
+    public void redirect(String newLocation) {
+        exchange.getResponseHeaders().set("Location", newLocation);
+        try {
+            exchange.sendResponseHeaders(302, -1); // 302 Found for redirection
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void addCookie(String name, String value) {

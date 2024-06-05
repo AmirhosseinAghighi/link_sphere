@@ -22,6 +22,7 @@ public class RequestHandler implements HttpHandler{
     private HashMap<RequestMethodTypes, Method> methods = new HashMap<RequestMethodTypes, Method>();
     private String dynamicRegex = "\\{\\w+\\}";
     private Pattern dynamicPattern = Pattern.compile(dynamicRegex);
+    private Pattern dynamicPathPattern = Pattern.compile("\\[\\w+\\]");
     private String dynamicKey = "";
     private Logger logger = Logger.getLogger();
 
@@ -82,7 +83,11 @@ public class RequestHandler implements HttpHandler{
         path = path.substring(partIndex + 1);
 
         String dynamicKey = "";
-        if (dynamicPattern.matcher(pathOption).find()) {
+
+        if (dynamicPathPattern.matcher(pathOption).find()) {
+            dynamicKey = pathOption.substring(1, pathOption.length() - 1);
+            pathOption = "[]";
+        } else if (dynamicPattern.matcher(pathOption).find()) {
             dynamicKey = pathOption.substring(1, pathOption.length() - 1);
             pathOption = "{}";
         }
@@ -92,8 +97,11 @@ public class RequestHandler implements HttpHandler{
             currentPath = new RequestHandler();
             currentPath.setDynamicKey(dynamicKey);
             paths.put(pathOption, currentPath);
-            currentPath.addPath(path, methodType, method);
-            return;
+
+            if (pathOption.equals("[]")) {
+                currentPath.addPath("", methodType, method);
+            }
+
         } else if (path.isEmpty()) {
             if (getMethod(methodType) != null)
                 throw new duplicateException("duplicated path Found");
@@ -136,10 +144,17 @@ public class RequestHandler implements HttpHandler{
 
         var currentPath = paths.get(pathOption);
         if (currentPath == null) {
-            currentPath = paths.get("{}");
-            req.addDynamicParameter(currentPath.getDynamicKey(), pathOption);
-            if (currentPath == null)
-                throw new notFoundException("Path does not registered.");
+            // check if dynamic path pattern found
+            currentPath = paths.get("[]");
+            if (currentPath != null) {
+                req.addDynamicParameter(currentPath.getDynamicKey(), pathOption + "/" + path);
+            } else {
+                // check if dynamic parameter path found
+                currentPath = paths.get("{}");
+                req.addDynamicParameter(currentPath.getDynamicKey(), pathOption);
+                if (currentPath == null)
+                    throw new notFoundException("Path does not registered.");
+            }
         }
 
         if (path.isEmpty()) {
