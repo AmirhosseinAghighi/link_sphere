@@ -8,6 +8,5 @@ class profileObject {
     String firstname;
     String lastname;
     String additionalName;
-    String profilePhoto;
-//    String
+    String biography;
 }

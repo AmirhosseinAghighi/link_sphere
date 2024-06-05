@@ -26,12 +26,6 @@ public class Profile {
     @Column(length = 220)
     private String bio;
 
-    @Column(name = "profile_photo")
-    private String profilePhoto;
-
-    @Column
-    private String banner;
-
     @Column
     private String location;
 }

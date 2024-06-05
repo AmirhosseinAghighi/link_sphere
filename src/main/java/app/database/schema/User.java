@@ -109,5 +109,18 @@ public class User {
     public void setToken(Collection<Token> token) {
         this.token = token;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", mail='" + mail + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", nickName='" + nickName + '\'' +
+                '}';
+    }
 }
 

@@ -1,14 +1,19 @@
 package org.linkSphere.http.dto;
 
 import com.sun.net.httpserver.HttpExchange;
+import org.linkSphere.exceptions.criticalException;
+import org.linkSphere.exceptions.notFoundException;
 import org.linkSphere.http.RequestMethodTypes;
 
+import java.io.*;
 import java.net.HttpCookie;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Req {
     private RequestMethodTypes method;
@@ -18,11 +23,16 @@ public class Req {
     private String ip;
     private Map<String, List<String>> headers;
     private String query;
+    private byte[] rquestBodyByteArray;
     private String requestBody;
     private Map<String, String> cookies;
     private String userAgent;
+    private HashMap<String, String> dynamicParameters;
+    private Pattern fileNamePattern = Pattern.compile("filename=\"(.+?)\"");
+    private Pattern fileFormatPattern = Pattern.compile("Content-Type: (.+)");
 
-    public Req(HttpExchange exchange) {
+
+    public Req(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
         switch (method) {
             case "GET": {
@@ -54,12 +64,27 @@ public class Req {
         this.headers = exchange.getRequestHeaders();
         this.query = exchange.getRequestURI().getQuery();
 
-        Scanner scanner = new Scanner(exchange.getRequestBody(), StandardCharsets.UTF_8.name());
-        scanner.useDelimiter("\\A");
-        this.requestBody = scanner.hasNext() ? scanner.next() : "";
+        this.rquestBodyByteArray = readInputStream(exchange.getRequestBody());
+        this.requestBody = new String(rquestBodyByteArray, StandardCharsets.UTF_8);
 
         this.cookies = parseCookies(exchange.getRequestHeaders().getFirst("Cookie"));
         this.userAgent = exchange.getRequestHeaders().getFirst("User-Agent");
+        this.dynamicParameters = new HashMap<>();
+    }
+
+    public void addDynamicParameter(String key, String parameter) {
+        dynamicParameters.put(key, parameter);
+    }
+
+    private byte[] readInputStream(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[8192];
+        int nRead;
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        buffer.flush();
+        return buffer.toByteArray();
     }
 
     private Map<String, String> parseCookies(String cookieHeader) {
@@ -72,6 +97,81 @@ public class Req {
             }
         }
         return cookies;
+    }
+
+    public int getUploadedFilesCount() {
+        int count = 0;
+        Matcher matcher = fileNamePattern.matcher(requestBody);
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
+    }
+
+    public String getUploadedFileName(int key) {
+        String fileName = null;
+        Matcher matcher = fileNamePattern.matcher(requestBody);
+        for (int i = 0; i < key; i++) {
+            if (matcher.find()) {
+                fileName = matcher.group(1);
+            } else {
+                return null;
+            }
+        }
+        return fileName;
+    }
+
+    public String getUploadedFileFormat(int key) {
+        String fileFormat = null;
+        Matcher matcher = fileFormatPattern.matcher(requestBody);
+        for (int i = 0; i < key; i++) {
+            if (matcher.find()) {
+                fileFormat = matcher.group(1);
+            } else {
+                return null;
+            }
+        }
+        return fileFormat;
+    }
+
+    public boolean isMultipartRequest() {
+        List<String> headerValue = headers.get("Content-Type");
+        return headerValue != null && headerValue.getFirst() != null && headerValue.getFirst().startsWith("multipart/form-data");
+    }
+
+    private String getMultipartBoundary() throws criticalException {
+        if (isMultipartRequest()) {
+            String headerValue = headers.get("Content-Type").getFirst();
+            return headerValue.split("boundary=")[1];
+        } else {
+            throw new criticalException("This Request is not multipart/form-data request");
+        }
+    }
+
+    public void saveUploadedFile() throws notFoundException, criticalException, IOException {
+        // TODO: fix this fucked up code for multipart/form-data requests :/
+        InputStream inputStream = new ByteArrayInputStream(rquestBodyByteArray);
+        String boundary = getMultipartBoundary();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        byte[] buffer = new byte[1264640];
+        int bytesCount;
+        boolean found = false;
+        ByteArrayOutputStream fileContent = new ByteArrayOutputStream();
+
+
+        Path filePath = Paths.get("uploads/test.jpg");
+        Files.createDirectories(filePath.getParent()); // Ensure the directory exists
+        try (FileOutputStream outputStream = new FileOutputStream("src/main/java/app/assets/t.jpg")) {
+            while ((bytesCount = inputStream.read(buffer)) != -1) {
+                String asString = new String(buffer, 0, bytesCount);
+                if (asString.contains(boundary)){
+                    String test = "Content-Type: image/jpeg";
+//                    System.out.println();
+                    byte[] t = asString.substring(asString.indexOf(test) + test.length()).getBytes(StandardCharsets.UTF_8);
+                    outputStream.write(buffer, 0, bytesCount);
+                }
+            }
+        }
     }
 
     public RequestMethodTypes getMethod() {
@@ -112,5 +212,13 @@ public class Req {
 
     public String getUserAgent() {
         return userAgent;
+    }
+
+    public HashMap<String, String> getDynamicParameters() {
+        return dynamicParameters;
+    }
+
+    public byte[] getRequestBodyAsByteArray() {
+        return rquestBodyByteArray;
     }
 }

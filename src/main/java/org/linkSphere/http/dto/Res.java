@@ -1,19 +1,15 @@
 package org.linkSphere.http.dto;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
-import org.linkSphere.annotations.useGson;
-import org.linkSphere.core.Sphere;
-import org.linkSphere.exceptions.NoStatusCodeException;
+import org.linkSphere.exceptions.notFoundException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.net.HttpCookie;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class Res {
     private Headers responseHeaders;
@@ -30,11 +26,15 @@ public class Res {
         return this;
     }
 
-    public void send(int statusCode, String response) throws RuntimeException {
+    private void addDefaultResponseHeaders() {
         responseHeaders.add("Access-Control-Allow-Origin", "*");
         responseHeaders.add("Access-Control-Allow-Headers","origin, content-type, accept, authorization");
         responseHeaders.add("Access-Control-Allow-Credentials", "true");
         responseHeaders.add("Access-Control-Allow-Methods", "GET, POST");
+    }
+
+    public void send(int statusCode, String response) throws RuntimeException {
+        addDefaultResponseHeaders();
         responseHeaders.add("Content-Type", "application/json");
 
         if (cookies != null) {
@@ -65,6 +65,29 @@ public class Res {
 
     public void sendMessage(String message) throws RuntimeException {
         sendError(200, message);
+    }
+
+    public void sendFile(File file, String contentType) throws notFoundException, IOException {
+        if (!file.exists()) {
+            throw new notFoundException("File Not Found");
+        }
+        addDefaultResponseHeaders();
+        responseHeaders.add("Content-Type", contentType);
+
+        try {
+            exchange.sendResponseHeaders(200, 0);
+        } catch (IOException e) {
+            // TODO: add logger to log this exception as critical for user
+            throw new RuntimeException(e);
+        }
+
+        OutputStream outputStream = exchange.getResponseBody();
+        try {
+            Files.copy(file.toPath(), outputStream);
+        } catch (IOException e) {
+            throw e;
+        }
+        outputStream.close();
     }
 
     public void addCookie(String name, String value) {
