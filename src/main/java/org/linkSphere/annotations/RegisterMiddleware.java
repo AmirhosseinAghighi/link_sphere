@@ -1,9 +1,9 @@
-package org.linkSphere.annotations.http;
+package org.linkSphere.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Put {
-    String value() default "";
+public @interface RegisterMiddleware {
+    String name() default "";
 }

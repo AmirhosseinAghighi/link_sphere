@@ -100,29 +100,37 @@ public class Sphere {
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
             RequestMethodTypes methodType = null;
+
+            String addonPath = "";
+
             if (method.isAnnotationPresent(Get.class)) {
                 methodType = RequestMethodTypes.GET;
+                addonPath = method.getAnnotation(Get.class).value();
             }
 
             if (method.isAnnotationPresent(Post.class)) {
                 methodType = RequestMethodTypes.POST;
+                addonPath = method.getAnnotation(Post.class).value();
             }
 
             if (method.isAnnotationPresent(Delete.class)) {
                 methodType = RequestMethodTypes.DELETE;
+                addonPath = method.getAnnotation(Delete.class).value();
             }
 
             if (method.isAnnotationPresent(Head.class)) {
                 methodType = RequestMethodTypes.HEAD;
+                addonPath = method.getAnnotation(Head.class).value();
             }
 
             if (method.isAnnotationPresent(Update.class)) {
                 methodType = RequestMethodTypes.UPDATE;
+                addonPath = method.getAnnotation(Update.class).value();
             }
 
             if (methodType != null) {
                 if (method.getParameterCount() != 2) continue;
-                String path = ((Endpoint) clazz.getAnnotation(Endpoint.class)).value();
+                String path = ((Endpoint) clazz.getAnnotation(Endpoint.class)).value() + addonPath;
                 try {
                     logger.debug("Resolving endpoint method ", method.getName(), " with path ", path);
                     requestHandler.addPath(path, methodType, method);
