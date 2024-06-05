@@ -1,8 +1,6 @@
 package org.linkSphere.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import app.database.schema.User;
 import org.linkSphere.util.Logger;
@@ -50,7 +48,7 @@ public class JWT {
             return Jwts.parser()
                     .setSigningKey(getSigningKey())
                     .build()
-                    .parseClaimsJws(token)
+                    .parseSignedClaims(token)
                     .getPayload();
         } catch (JwtException e) {
             throw e;
