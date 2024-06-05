@@ -26,7 +26,7 @@ public class RequestHandler implements HttpHandler{
     private Logger logger = Logger.getLogger();
 
     @Override
-    public void handle(HttpExchange httpExchange) {
+    public void handle(HttpExchange httpExchange) throws IOException {
         Req req = new Req(httpExchange);
         Res res = new Res(httpExchange);
         logger.debug("Request received: {}", req.getUrl());
@@ -137,6 +137,7 @@ public class RequestHandler implements HttpHandler{
         var currentPath = paths.get(pathOption);
         if (currentPath == null) {
             currentPath = paths.get("{}");
+            req.addDynamicParameter(currentPath.getDynamicKey(), pathOption);
             if (currentPath == null)
                 throw new notFoundException("Path does not registered.");
         }
