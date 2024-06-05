@@ -1,4 +1,4 @@
-package app.views;
+package app.views.auth;
 
 import app.controllers.Auth;
 import app.exceptions.InvalidCredentialsException;

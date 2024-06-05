@@ -1,4 +1,4 @@
-package app.views;
+package app.views.auth;
 
 import app.database.UserDAO;
 import com.google.gson.Gson;
@@ -9,7 +9,6 @@ import org.linkSphere.annotations.http.Get;
 import org.linkSphere.annotations.http.Post;
 import org.linkSphere.annotations.useGson;
 import org.linkSphere.annotations.UseLogger;
-import org.linkSphere.database.DAO;
 import app.database.schema.User;
 import org.linkSphere.http.dto.Req;
 import org.linkSphere.http.dto.Res;
