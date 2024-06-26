@@ -41,7 +41,7 @@ public class Sphere {
             throw new duplicateException("Sphere is running already.");
         } else {
             running = true;
-            Sphere sphere =  new Sphere(port, mainClass);
+            Sphere sphere = new Sphere(port, mainClass);
             logger.info("Sphere started listening on https://localhost:" + port);
             return sphere;
         }
@@ -54,7 +54,6 @@ public class Sphere {
         AnnotationProcessor(mainClass.getPackage().getName().replace(".", "/"), mainClass.getPackage().getName());
         server = new HttpHandler(port, requestHandler);
     }
-
 
 
     private void AnnotationProcessor(String directory, String packageName) {
@@ -129,7 +128,10 @@ public class Sphere {
             }
 
             if (methodType != null) {
-                if (method.getParameterCount() != 2) continue;
+                if (method.getParameterCount() != 2) {
+                    logger.warning("A request with not enough parameters ignored.");
+                    continue;
+                }
                 String path = ((Endpoint) clazz.getAnnotation(Endpoint.class)).value() + addonPath;
                 try {
                     logger.debug("Resolving endpoint method ", method.getName(), " with path ", path);
