@@ -11,7 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -148,6 +150,7 @@ public class Req {
         }
     }
 
+
     public void saveUploadedFile() throws notFoundException, criticalException, IOException {
         // TODO: fix this fucked up code for multipart/form-data requests :/
         InputStream inputStream = new ByteArrayInputStream(rquestBodyByteArray);
@@ -164,7 +167,7 @@ public class Req {
         try (FileOutputStream outputStream = new FileOutputStream("src/main/java/app/assets/t.jpg")) {
             while ((bytesCount = inputStream.read(buffer)) != -1) {
                 String asString = new String(buffer, 0, bytesCount);
-                if (asString.contains(boundary)){
+                if (asString.contains(boundary)) {
                     String test = "Content-Type: image/jpeg";
 //                    System.out.println();
                     byte[] t = asString.substring(asString.indexOf(test) + test.length()).getBytes(StandardCharsets.UTF_8);

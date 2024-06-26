@@ -20,23 +20,20 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static app.controllers.UserController.doesUserExist;
-
 @Endpoint("/profile")
 class profilePhoto {
     // as we want only accept these two format, we should check the binary file that we get
     // PNG signature
     private static final byte[] PNG_SIGNATURE =
-            new byte[] {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+            new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
     // JPG signature (common case)
     private static final byte[] JPG_SIGNATURE =
-            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+            new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
 
 
     @Get("/{userID}/photo")
     public void getPhoto(Req req, Res res) throws IOException, notFoundException {
         String id = req.getDynamicParameters().get("userID");
-        System.out.println(id);
         System.out.println(UserController.doesUserExist(Long.parseLong(id)));
         if (!UserController.doesUserExist(Long.parseLong(id))) {
             res.sendError(404, "User not found");
@@ -69,8 +66,6 @@ class profilePhoto {
             }
         }
     }
-
-
 
 
     @Post("/photo")

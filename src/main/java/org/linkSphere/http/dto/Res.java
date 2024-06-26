@@ -7,8 +7,8 @@ import org.linkSphere.exceptions.notFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.net.HttpCookie;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class Res {
@@ -28,7 +28,7 @@ public class Res {
 
     private void addDefaultResponseHeaders() {
         responseHeaders.add("Access-Control-Allow-Origin", "*");
-        responseHeaders.add("Access-Control-Allow-Headers","origin, content-type, accept, authorization");
+        responseHeaders.add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
         responseHeaders.add("Access-Control-Allow-Credentials", "true");
         responseHeaders.add("Access-Control-Allow-Methods", "GET, POST");
     }

@@ -1,4 +1,5 @@
 package org.linkSphere.http;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.linkSphere.annotations.UseLogger;
@@ -17,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @UseLogger
-public class RequestHandler implements HttpHandler{
+public class RequestHandler implements HttpHandler {
     private HashMap<String, RequestHandler> paths = new HashMap<String, RequestHandler>();
     private HashMap<RequestMethodTypes, Method> methods = new HashMap<RequestMethodTypes, Method>();
     private String dynamicRegex = "\\{\\w+\\}";
@@ -32,7 +33,7 @@ public class RequestHandler implements HttpHandler{
         Res res = new Res(httpExchange);
         logger.debug("Request received: {}", req.getUrl());
         try {
-            runPath(req.getUrl(), req.getMethod(),req, res);
+            runPath(req.getUrl(), req.getMethod(), req, res);
         } catch (notFoundException e) {
             logger.error("Request not found: " + req.getUrl());
             try {
@@ -71,13 +72,14 @@ public class RequestHandler implements HttpHandler{
             path = path.substring(1);
         }
 
+
         int partIndex = path.indexOf("/");
         String pathOption;
-        if (partIndex == -1)  {
+        if (partIndex == -1) {
             pathOption = path;
             partIndex = path.length() - 1;
         } else {
-             pathOption = path.substring(0, partIndex);
+            pathOption = path.substring(0, partIndex);
         }
 
         path = path.substring(partIndex + 1);
@@ -114,7 +116,7 @@ public class RequestHandler implements HttpHandler{
         }
     }
 
-    public void runPath(String path, RequestMethodTypes methodType, Req req, Res res) throws notFoundException{
+    public void runPath(String path, RequestMethodTypes methodType, Req req, Res res) throws notFoundException {
         try {
             runPath(path, methodType, new HashMap<String, String>(), req, res);
         } catch (notFoundException e) {
@@ -133,7 +135,7 @@ public class RequestHandler implements HttpHandler{
 
         int partIndex = path.indexOf("/");
         String pathOption;
-        if (partIndex == -1)  {
+        if (partIndex == -1) {
             pathOption = path;
             partIndex = path.length() - 1;
         } else {
@@ -151,9 +153,9 @@ public class RequestHandler implements HttpHandler{
             } else {
                 // check if dynamic parameter path found
                 currentPath = paths.get("{}");
-                req.addDynamicParameter(currentPath.getDynamicKey(), pathOption);
                 if (currentPath == null)
                     throw new notFoundException("Path does not registered.");
+                req.addDynamicParameter(currentPath.getDynamicKey(), pathOption);
             }
         }
 

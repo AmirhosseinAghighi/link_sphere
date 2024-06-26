@@ -2,7 +2,7 @@ package app;
 
 import org.linkSphere.annotations.UseLogger;
 import org.linkSphere.annotations.http.Endpoint;
-import org.linkSphere.annotations.http.Post;
+import org.linkSphere.annotations.http.Get;
 import org.linkSphere.annotations.useDAO;
 import org.linkSphere.core.Sphere;
 import org.linkSphere.database.DAO;
@@ -15,6 +15,7 @@ import org.linkSphere.util.Logger;
 public class main {
     private static Logger logger;
     private static DAO dao;
+
     public static void main(String[] args) {
         try {
             Sphere.setDebug(true);
@@ -28,6 +29,25 @@ public class main {
     }
 }
 
+@Endpoint("/")
+class hi {
+    @Get
+    public void get(Req req, Res res) {
+        res.send(200, "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Hello World</title>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<h1>Hello World</h1>\n" +
+                "<h2>Welcome to Sphere framework ;)</h2>\n" +
+                "<h4>Quick start: </h4>\n" +
+                "</body>\n" +
+                "</html>", "text/html; charset=utf-8");
+    }
+}
 
 /*
     API DOCUMENTATION
