@@ -1,7 +1,8 @@
 package app.views.profile;
 
-import app.controllers.Auth;
-import app.controllers.UserController;
+import app.services.AuthService;
+import app.services.UserService;
+import app.database.schema.Profile;
 import app.global.CountryCode;
 import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
@@ -24,54 +25,33 @@ public class ProfileInformation {
     private static Logger logger;
     @Post("/update")
     public void updateProfile(Req req, Res res) {
-        if (!Auth.isAuthorized(req.getCookies())) {
+        if (!AuthService.isAuthorized(req.getCookies())) {
             res.sendError(403, "Authentication required");
             return;
         }
 
-        Claims refreshTokenClaims = JWT.parseToken(req.getCookies().get("accessToken"));
-        long userID = Long.parseLong(refreshTokenClaims.getSubject());
+        Claims accessToken = JWT.parseToken(req.getCookies().get("accessToken"));
+        long userID = Long.parseLong(accessToken.getSubject());
 
-        ProfileInformationJson data = gson.fromJson(req.getRequestBody(), ProfileInformationJson.class);
+        Profile data = gson.fromJson(req.getRequestBody(), Profile.class);
         String firstName = data.getFirstName();
         String lastName = data.getLastName();
         String nickName = data.getNickName();
-        int countryCode = data.getCountry();
-        if ((firstName == null || firstName.length() > 20) || (lastName == null || lastName.length() > 40) || (nickName == null || nickName.length() > 40) || (CountryCode.getByCode(countryCode) == null)) {
+        int countryCode = data.getCountryCode();
+        String bio = data.getBio();
+        if ((firstName != null && firstName.length() > 20) || (lastName != null && lastName.length() > 40) || (nickName != null && nickName.length() > 40) || (countryCode != 0 && CountryCode.getByCode(countryCode) == null) || (bio != null && bio.length() > 220)) {
             res.sendError(400, "Bad Request");
             return;
         }
 
         try {
-            UserController.updateUserInformation(userID, firstName, lastName, nickName, countryCode);
+            UserService.updateUserInformation(userID, firstName, lastName, nickName, countryCode, bio);
             res.sendMessage("Successfully updated profile");
             logger.debug("Updating profile");
         } catch (NoSuchElementException e) {
             res.sendError(404, "User not found");
+        } catch (IllegalArgumentException e) {
+            res.sendError(400, "Bad Request");
         }
-    }
-}
-
-
-class ProfileInformationJson {
-    private String firstName;
-    private String lastName;
-    private String nickName;
-    private int country;
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public int getCountry() {
-        return country;
     }
 }

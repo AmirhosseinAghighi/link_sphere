@@ -21,18 +21,6 @@ public class User {
     @Column(name = "password")
     String password;
 
-    @Column(name = "first_name", length = 20)
-    String firstName;
-
-    @Column(name = "last_name", length = 40)
-    String lastName;
-
-    @Column(name = "nick_name", length = 40)
-    String nickName;
-
-    @Column(name = "country_code", length = 60, nullable = true)
-    Integer countryCode;
-
     @OneToMany(mappedBy = "user")
     private Collection<Token> token;
 
@@ -43,9 +31,6 @@ public class User {
         this.username = username;
         this.mail = mail;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.countryCode = countryCode;
     }
 
     public User() {}
@@ -82,44 +67,12 @@ public class User {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
     public Collection<Token> getToken() {
         return token;
     }
 
     public void setToken(Collection<Token> token) {
         this.token = token;
-    }
-
-    public int getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(int countryCode) {
-        this.countryCode = countryCode;
     }
 
     @Override
@@ -129,9 +82,6 @@ public class User {
                 ", username='" + username + '\'' +
                 ", mail='" + mail + '\'' +
                 ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", nickName='" + nickName + '\'' +
                 '}';
     }
 }
