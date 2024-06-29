@@ -1,6 +1,6 @@
 package app.views.auth;
 
-import app.controllers.Auth;
+import app.services.AuthService;
 import app.exceptions.InvalidCredentialsException;
 import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
@@ -26,7 +26,7 @@ public class Login {
     @Post
     public void post(Req req, Res res) {
         try {
-            if (Auth.isAuthorized(req.getCookies())) {
+            if (AuthService.isAuthorized(req.getCookies())) {
                 res.sendError(403, "You already logged in");
                 return;
             }
@@ -44,7 +44,7 @@ public class Login {
 
             // TODO: SAVE JWT TOKEN TO DATA BASE ( we should add some new parameters in request body such as device information to save on this stage )
             // TODO: for saving jwt tokens, we should search for solutions to auto remove jwt token after expiration on database! Good Luck
-            String[] tokens = Auth.loginUser(username, password, req.getUserAgent(), req.getIp(), req.getCookies().get("refreshToken"));
+            String[] tokens = AuthService.loginUser(username, password, req.getUserAgent(), req.getIp(), req.getCookies().get("refreshToken"));
             res.addCookie("accessToken", tokens[0], true);
             res.addCookie("refreshToken", tokens[1], true);
             res.sendMessage("Logged in successfully");
