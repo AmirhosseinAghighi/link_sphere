@@ -1,7 +1,7 @@
 package app.views.profile;
 
-import app.controllers.Auth;
-import app.controllers.UserController;
+import app.services.AuthService;
+import app.services.UserService;
 import org.linkSphere.annotations.UseLogger;
 import org.linkSphere.annotations.http.Endpoint;
 import org.linkSphere.annotations.http.Get;
@@ -14,7 +14,6 @@ import org.linkSphere.util.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -41,8 +40,8 @@ public class ProfileMedia {
     @Get("/{userID}/photo")
     public void getPhoto(Req req, Res res) throws IOException, notFoundException {
         String id = req.getDynamicParameters().get("userID");
-        System.out.println(UserController.doesUserExist(Long.parseLong(id)));
-        if (!UserController.doesUserExist(Long.parseLong(id))) {
+        System.out.println(UserService.doesUserExist(Long.parseLong(id)));
+        if (!UserService.doesUserExist(Long.parseLong(id))) {
             res.sendError(404, "User not found");
             return;
         }
@@ -78,7 +77,7 @@ public class ProfileMedia {
     @Post("/photo")
     public void post(Req req, Res res) throws IOException {
         String token = req.getCookies().get("accessToken");
-        if (!Auth.isAuthorized(req.getCookies())) {
+        if (!AuthService.isAuthorized(req.getCookies())) {
             res.sendError(403, "Not authorized");
             return;
         }
@@ -129,8 +128,8 @@ public class ProfileMedia {
     @Get("/{userID}/banner")
     public void getBanner(Req req, Res res) throws IOException, notFoundException {
         String id = req.getDynamicParameters().get("userID");
-        System.out.println(UserController.doesUserExist(Long.parseLong(id)));
-        if (!UserController.doesUserExist(Long.parseLong(id))) {
+        System.out.println(UserService.doesUserExist(Long.parseLong(id)));
+        if (!UserService.doesUserExist(Long.parseLong(id))) {
             res.sendError(404, "User not found");
             return;
         }
@@ -154,7 +153,7 @@ public class ProfileMedia {
     @Post("/banner")
     public void postBanner(Req req, Res res) throws IOException {
         String token = req.getCookies().get("accessToken");
-        if (!Auth.isAuthorized(req.getCookies())) {
+        if (!AuthService.isAuthorized(req.getCookies())) {
             res.sendError(403, "Not authorized");
             return;
         }
