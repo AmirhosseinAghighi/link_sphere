@@ -1,4 +1,4 @@
-package app.controllers;
+package app.services;
 
 import app.database.UserDAO;
 import app.database.schema.User;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 
-public class Auth {
+public class AuthService {
     @Inject(dependency = "userDAO")
     private static UserDAO userDAO;
 
