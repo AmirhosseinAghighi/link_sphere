@@ -112,6 +112,11 @@ public class Sphere {
                 addonPath = method.getAnnotation(Post.class).value();
             }
 
+            if (method.isAnnotationPresent(Put.class)) {
+                methodType = RequestMethodTypes.PUT;
+                addonPath = method.getAnnotation(Put.class).value();
+            }
+
             if (method.isAnnotationPresent(Delete.class)) {
                 methodType = RequestMethodTypes.DELETE;
                 addonPath = method.getAnnotation(Delete.class).value();
