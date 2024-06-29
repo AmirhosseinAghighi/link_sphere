@@ -44,7 +44,7 @@ public class Signup {
             }
 
             String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt()); // hash password to make it secure to save
-            var user = new User(username, mail, hashedPassword, firstname, lastname); // create user instance to save it in database.
+            var user = new User(username, mail, hashedPassword, firstname, lastname, 0); // create user instance to save it in database.
 
             try { // put it in try catch to catch exception and send it to client
                 userDAO.createNewUser(user); // create new one and save it.

@@ -8,9 +8,7 @@ import org.linkSphere.annotations.Dependency;
 import org.linkSphere.annotations.useDAO;
 import org.linkSphere.database.DAO;
 import app.database.schema.User;
-import org.linkSphere.http.dto.Req;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -109,6 +107,36 @@ public class UserDAO {
             session.close();
         }
         return false;
+    }
+
+    public void UpdateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode) throws NoSuchElementException {
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            session.beginTransaction();
+            User user = (User) session.get(User.class, userID);
+
+            if (firstName != null && !firstName.isBlank()) {
+                user.setFirstName(firstName);
+            }
+
+            if (lastName != null && !lastName.isBlank()) {
+                user.setLastName(lastName);
+            }
+
+            if (nickname != null && !nickname.isBlank()) {
+                user.setNickName(nickname);
+            }
+
+            if (countryCode != 0) {
+                user.setCountryCode(countryCode);
+            }
+            session.getTransaction().commit();
+        } catch (NoSuchElementException e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
     }
 
 //    public boolean doesUserExist(String username) {

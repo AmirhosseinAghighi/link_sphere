@@ -30,18 +30,22 @@ public class User {
     @Column(name = "nick_name", length = 40)
     String nickName;
 
+    @Column(name = "country_code", length = 60, nullable = true)
+    Integer countryCode;
+
     @OneToMany(mappedBy = "user")
     private Collection<Token> token;
 
     @OneToOne(mappedBy = "user")
     private Profile profile;
 
-    public User(String username, String mail, String password, String firstName, String lastName) {
+    public User(String username, String mail, String password, String firstName, String lastName, int countryCode) {
         this.username = username;
         this.mail = mail;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.countryCode = countryCode;
     }
 
     public User() {}
@@ -108,6 +112,14 @@ public class User {
 
     public void setToken(Collection<Token> token) {
         this.token = token;
+    }
+
+    public int getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(int countryCode) {
+        this.countryCode = countryCode;
     }
 
     @Override
