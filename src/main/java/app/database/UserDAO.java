@@ -109,36 +109,6 @@ public class UserDAO {
         return false;
     }
 
-    public void UpdateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode) throws NoSuchElementException {
-        Session session = sessionFactory.getCurrentSession();
-        try {
-            session.beginTransaction();
-            User user = (User) session.get(User.class, userID);
-
-            if (firstName != null && !firstName.isBlank()) {
-                user.setFirstName(firstName);
-            }
-
-            if (lastName != null && !lastName.isBlank()) {
-                user.setLastName(lastName);
-            }
-
-            if (nickname != null && !nickname.isBlank()) {
-                user.setNickName(nickname);
-            }
-
-            if (countryCode != 0) {
-                user.setCountryCode(countryCode);
-            }
-            session.getTransaction().commit();
-        } catch (NoSuchElementException e) {
-            session.getTransaction().rollback();
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
-
 //    public boolean doesUserExist(String username) {
 //
 //    }
