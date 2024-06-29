@@ -5,9 +5,11 @@ import app.database.JobDao;
 import app.database.ProfileDAO;
 import app.database.UserDAO;
 import app.database.schema.Job;
+import app.database.schema.User;
 import org.hibernate.exception.ConstraintViolationException;
 import org.linkSphere.annotations.Inject;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class UserService {
@@ -22,6 +24,10 @@ public class UserService {
 
     public static boolean doesUserExist(long userID) {
         return userDao.doesUserExist(userID);
+    }
+
+    public static List<Job> getUserJobsById(long userID) {
+        return jobDao.getUserJobs(userID);
     }
 
     private static boolean doesUserHaveProfile(long userID) {

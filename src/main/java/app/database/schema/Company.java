@@ -13,7 +13,7 @@ public class Company {
     private String name;
 
     @Column(nullable = false)
-    private String location;
+    private Integer location;
 
     @Column
     private String description;
