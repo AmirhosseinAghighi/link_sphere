@@ -48,7 +48,7 @@ public class JobDao {
         }
     }
 
-    public void updateExistingJobByID(long id, Job jobData) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
+    public void updateExistingJobByID(long userID, long id, Job jobData) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
         Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
@@ -57,6 +57,11 @@ public class JobDao {
             if (job == null) {
                 session.getTransaction().rollback();
                 throw new NoSuchElementException("Job not found.");
+            }
+
+            if (job.getProfile().getUser().getId() != userID) {
+                session.getTransaction().rollback();
+                throw new IllegalAccessError("Not allowed to update this job.");
             }
 
             if (jobData.getTitle() != null) {

@@ -49,7 +49,16 @@ public class UserService {
         jobDao.createNewJob(userID, companyID, jobData);
     }
 
-    public static void updateExistingJob(Long id, Job jobData) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
-        jobDao.updateExistingJobByID(id, jobData);
+    public static void updateExistingJob(Long userID, Long id, Job jobData) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException, IllegalAccessError {
+        String title = jobData.getTitle();
+        String description = jobData.getDescription();
+        Long company = jobData.getCompany();
+        Long startDate = jobData.getStartDate();
+        Long endDate = jobData.getEndDate();
+
+        if ((title == null && description == null && company == null && startDate == null && endDate == null)) {
+            throw new IllegalArgumentException();
+        }
+        jobDao.updateExistingJobByID(userID, id, jobData);
     }
 }

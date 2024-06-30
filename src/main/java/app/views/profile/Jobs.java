@@ -72,7 +72,7 @@ public class Jobs {
         }
 
         List<Job> jobs = UserService.getUserJobsById(userID);
-        res.sendMessage(jobs.toString());
+        res.send(200, "{\"code\": 200, \"jobs\": " + jobs.toString() + "}");
         // TODO: Find out why gson.toJson(jobs) will throw null exception ( an exception with null message )
     }
 
@@ -87,25 +87,23 @@ public class Jobs {
         long userID = Long.parseLong(refreshTokenClaims.getSubject());
 
         var jobData = gson.fromJson(req.getRequestBody(), Job.class);
-        String title = jobData.getTitle();
-        String description = jobData.getDescription();
-        Long company = jobData.getCompany();
-        Long startDate = jobData.getStartDate();
-        Long endDate = jobData.getEndDate();
         String id = req.getDynamicParameters().get("jobID");
 
-        if ((title == null && description == null && company == null && startDate == null && endDate == null) || id.isBlank()) {
+        if (id.isBlank()) {
             res.sendError(400, "Bad Request");
             return;
         }
 
         try {
-            UserService.updateExistingJob(Long.parseLong(req.getDynamicParameters().get("jobID")), jobData);
+            UserService.updateExistingJob(userID, Long.parseLong(id), jobData);
         } catch (NoSuchElementException e) {
             res.sendError(404, e.getMessage());
             return;
         } catch (ConstraintViolationException | IllegalArgumentException e) {
             res.sendError(400, "Bad Request");
+            return;
+        } catch (IllegalAccessError e) {
+            res.sendError(401, e.getMessage());
             return;
         }
         res.sendMessage("Updated Successfully");
