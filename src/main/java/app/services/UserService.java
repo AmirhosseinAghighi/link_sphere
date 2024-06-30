@@ -1,16 +1,13 @@
 package app.services;
 
 
-import app.database.EducationDAO;
-import app.database.JobDAO;
-import app.database.ProfileDAO;
-import app.database.UserDAO;
+import app.database.*;
 import app.database.schema.Education;
 import app.database.schema.Job;
+import app.database.schema.Skill;
 import org.hibernate.exception.ConstraintViolationException;
 import org.linkSphere.annotations.Inject;
 
-import java.util.IllformedLocaleException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -26,6 +23,9 @@ public class UserService {
 
     @Inject(dependency = "educationDAO")
     private static EducationDAO educationDao;
+
+    @Inject(dependency = "skillsDAO")
+    private static SkillsDAO skillsDAO;
 
     public static boolean doesUserExist(long userID) {
         return userDao.doesUserExist(userID);
@@ -98,5 +98,20 @@ public class UserService {
         }
 
         educationDao.updateExistingEducation(userID, id, education);
+    }
+
+    public static void registerNewSkill(long userID, Skill skill) throws IllegalArgumentException, ConstraintViolationException {
+        String skillName = skill.getSkillName();
+        Integer skillLevel = skill.getSkillLevel();
+
+        if (skillName == null || skillLevel == null) {
+            throw new IllegalArgumentException("Required fields not set");
+        }
+
+        skillsDAO.registerNewSkill(userID, skill);
+    }
+
+    public static void removeSkill(long userID, Long id) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
+        skillsDAO.removeSkill(userID, id);
     }
 }
