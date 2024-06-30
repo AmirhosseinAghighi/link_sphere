@@ -3,7 +3,6 @@ package app.database;
 import app.database.schema.Company;
 import app.database.schema.Job;
 import app.database.schema.Profile;
-import app.database.schema.User;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,17 +11,16 @@ import org.linkSphere.annotations.Dependency;
 import org.linkSphere.annotations.useDAO;
 import org.linkSphere.database.DAO;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @useDAO
 @Dependency(name = "jobDAO")
-public class JobDao {
+public class JobDAO {
     private static DAO dao;
     private SessionFactory sessionFactory;
 
-    public JobDao() {
+    public JobDAO() {
         sessionFactory = dao.getSessionFactory();
     }
 
