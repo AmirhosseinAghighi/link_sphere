@@ -1,13 +1,13 @@
 package app.database;
 
 import app.database.schema.Token;
+import app.database.schema.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
 import org.linkSphere.annotations.Dependency;
 import org.linkSphere.annotations.useDAO;
 import org.linkSphere.database.DAO;
-import app.database.schema.User;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -82,7 +82,7 @@ public class UserDAO {
         try {
             session.beginTransaction();
             Token token = (Token) session.createQuery("from Token token where token.user.id = :userID and token.token = :refreshToken")
-                            .setParameter("userID", userID).setParameter("refreshToken", oldRefreshToken).list().getFirst();
+                    .setParameter("userID", userID).setParameter("refreshToken", oldRefreshToken).list().getFirst();
             token.setToken(refreshToken);
             token.setIp(ip);
             token.setUserAgent(userAgent);
