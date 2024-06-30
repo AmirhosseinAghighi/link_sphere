@@ -1,12 +1,9 @@
 package app.views.profile;
 
-import app.database.schema.Education;
-import app.database.schema.Job;
-import app.database.schema.Skill;
+import app.database.schema.*;
 import app.global.settingsEnum.birthdayView;
 import app.services.AuthService;
 import app.services.UserService;
-import app.database.schema.Profile;
 import app.global.CountryCode;
 import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
@@ -41,11 +38,13 @@ public class ProfileInformation {
         List<Job> jobs = UserService.getUserJobsById(userID);
         List<Education> educations = UserService.getUserEducationsById(userID);
         List<Skill> skills = UserService.getUserSkillsById(userID);
+        Profile profile = UserService.getUserProfileById(userID);
 
         res.send(200, "{\"code\": 200" +
                 ", \"jobs\": " + jobs.toString() +
                 ", \"educations\": "+ educations.toString() +
                 ", \"skills\": " + skills.toString() +
+                ", \"profile\": " + profile.toString() +
                 "}");
     }
 

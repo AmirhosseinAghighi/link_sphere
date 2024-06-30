@@ -101,4 +101,18 @@ public class ProfileDAO {
             session.close();
         }
     }
+
+    public Profile getUserProfile(long userID) {
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            session.beginTransaction();
+            Profile profile = (Profile) session.get(Profile.class, userID);
+            return profile;
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            return null;
+        } finally {
+            session.close();
+        }
+    }
 }

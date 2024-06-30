@@ -143,4 +143,20 @@ public class Profile {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"bio\": \"" + bio + '"' +
+                ", \"phoneNumber\": \"" + phoneNumber + '"' +
+                ", \"birthdaySetting\": " + birthdaySetting.getNumber() +
+                ", \"birthday\": " + birthday +
+                ", \"countryCode\": " + countryCode +
+                ", \"nickName\": \"" + nickName + '"' +
+                ", \"lastName\": \"" + lastName + '"' +
+                ", \"firstName\": \"" + firstName + '"' +
+                ", \"openToWork\": " + openToWork +
+                '}';
+
+    }
 }

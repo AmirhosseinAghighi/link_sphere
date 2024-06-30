@@ -4,6 +4,7 @@ package app.services;
 import app.database.*;
 import app.database.schema.Education;
 import app.database.schema.Job;
+import app.database.schema.Profile;
 import app.database.schema.Skill;
 import app.global.settingsEnum.birthdayView;
 import org.hibernate.exception.ConstraintViolationException;
@@ -42,6 +43,10 @@ public class UserService {
 
     public static List<Skill> getUserSkillsById(long userID) {
         return skillsDAO.getUserSkills(userID);
+    }
+
+    public static Profile getUserProfileById(long userID) {
+        return profileDao.getUserProfile(userID);
     }
 
     private static boolean doesUserHaveProfile(long userID) {
