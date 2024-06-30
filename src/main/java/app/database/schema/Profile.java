@@ -104,4 +104,8 @@ public class Profile {
     public void setBio(String bio) {
         this.bio = bio;
     }
+
+    public User getUser() {
+        return user;
+    }
 }
