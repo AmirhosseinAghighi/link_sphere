@@ -2,8 +2,6 @@ package app.database.schema;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
-
 @Entity
 @Table(name = "educations")
 public class Education {
@@ -26,11 +24,11 @@ public class Education {
 
     @Column(name = "start_date", nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date startDate;
+    private Long startDate;
 
     @Column(name = "end_date")
     @Temporal(TemporalType.DATE)
-    private Date endDate;
+    private Long endDate;
 
     public long getId() {
         return id;
@@ -72,19 +70,31 @@ public class Education {
         this.fieldOfStudy = fieldOfStudy;
     }
 
-    public Date getStartDate() {
+    public Long getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Long startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public Long getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Long endDate) {
         this.endDate = endDate;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\": " + id +
+                ", \"institutionName\": \"" + institutionName + '"' +
+                ", \"fieldOfStudy\": \"" + fieldOfStudy + '"' +
+                ", \"degree\": \"" + degree + "\"" +
+                ", \"startDate\": " + startDate +
+                ", \"endDate\": " + endDate +
+                '}';
     }
 }

@@ -1,5 +1,7 @@
 package app.views.profile;
 
+import app.database.schema.Education;
+import app.database.schema.Job;
 import app.services.AuthService;
 import app.services.UserService;
 import app.database.schema.Profile;
@@ -7,6 +9,7 @@ import app.global.CountryCode;
 import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import org.linkSphere.annotations.UseLogger;
+import org.linkSphere.annotations.http.Get;
 import org.linkSphere.annotations.http.Post;
 import org.linkSphere.annotations.useGson;
 import org.linkSphere.annotations.http.Endpoint;
@@ -15,6 +18,7 @@ import org.linkSphere.http.dto.Req;
 import org.linkSphere.security.JWT;
 import org.linkSphere.util.Logger;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Endpoint("/profile")
@@ -23,6 +27,21 @@ import java.util.NoSuchElementException;
 public class ProfileInformation {
     private static Gson gson;
     private static Logger logger;
+
+    @Get("/{userID}")
+    public void getProfile(Req req, Res res) {
+        long userID = Long.parseLong(req.getDynamicParameters().get("userID"));
+        if (!UserService.doesUserExist(userID)) {
+            res.sendError(404, "User not found.");
+            return;
+        }
+
+        List<Job> jobs = UserService.getUserJobsById(userID);
+        List<Education> educations = UserService.getUserEducationsById(userID);
+
+        res.send(200, "{\"code\": 200, \"jobs\": " + jobs.toString() + ", \"educations\": " + educations.toString() + "}");
+    }
+
     @Post("/update")
     public void updateProfile(Req req, Res res) {
         if (!AuthService.isAuthorized(req.getCookies())) {

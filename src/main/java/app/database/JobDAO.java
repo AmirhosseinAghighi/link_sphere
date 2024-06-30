@@ -86,7 +86,7 @@ public class JobDAO {
                 job.setEndDate(jobData.getEndDate());
             }
 
-            if (jobData.getCompany() != null ) {
+            if (jobData.getCompany() != null) {
                 Company newCompany = (Company) session.get(Company.class, jobData.getCompany()); // idk how to check if found with load method
                 if (newCompany == null) {
                     session.getTransaction().rollback();
@@ -108,9 +108,9 @@ public class JobDAO {
         try {
             session.beginTransaction();
             List<Job> jobs = session.createQuery("From Job job WHERE job.profile.user.id = :userID").setParameter("userID", userID).list();
-            for (Job job : jobs) {
-                Hibernate.initialize(job.getProfile().getUser().getToken());
-            }
+//            for (Job job : jobs) {
+//                Hibernate.initialize(job.getProfile().getUser().getToken());
+//            }
             session.getTransaction().commit();
             return jobs;
         } catch (ConstraintViolationException e) {
