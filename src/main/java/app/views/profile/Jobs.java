@@ -52,15 +52,13 @@ public class Jobs {
 
         try {
             UserService.registerNewJobForUser(userID, company, jobData);
+            res.sendMessage("Added Successfully");
         } catch (NoSuchElementException e) {
             res.sendError(404, e.getMessage());
-            return;
         } catch (ConstraintViolationException e) {
             res.sendError(400, "Bad Request");
             logger.critical("Unexpected ConstraintViolationException: ", e, " values: ", jobData);
-            return;
         }
-        res.sendMessage("Added Successfully");
     }
 
     @Get("/{userID}/jobs")
@@ -96,17 +94,14 @@ public class Jobs {
 
         try {
             UserService.updateExistingJob(userID, Long.parseLong(id), jobData);
+            res.sendMessage("Updated Successfully");
         } catch (NoSuchElementException e) {
             res.sendError(404, e.getMessage());
-            return;
         } catch (ConstraintViolationException | IllegalArgumentException e) {
             res.sendError(400, "Bad Request");
-            return;
         } catch (IllegalAccessError e) {
             res.sendError(401, e.getMessage());
-            return;
         }
-        res.sendMessage("Updated Successfully");
     }
 
 }
