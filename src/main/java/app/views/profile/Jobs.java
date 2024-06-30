@@ -27,7 +27,6 @@ import java.util.NoSuchElementException;
 @useGson
 @UseLogger
 public class Jobs {
-    private static final Log log = LogFactory.getLog(Jobs.class);
     private static Gson gson;
     private static Logger logger;
 
