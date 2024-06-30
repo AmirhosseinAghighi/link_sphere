@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import io.jsonwebtoken.Claims;
 import org.hibernate.exception.ConstraintViolationException;
 import org.linkSphere.annotations.UseLogger;
+import org.linkSphere.annotations.http.Delete;
 import org.linkSphere.annotations.http.Endpoint;
 import org.linkSphere.annotations.http.Get;
 import org.linkSphere.annotations.http.Post;
@@ -58,7 +59,7 @@ public class Skills {
         // TODO: Find out why gson.toJson(jobs) will throw null exception ( an exception with null message )
     }
 
-    @Post("/skills/{skillID}/remove")
+    @Delete("/skills/{skillID}")
     public void removeNewSkill(Req req, Res res) {
         if (!AuthService.isAuthorized(req.getCookies())) {
             res.sendError(403, "Authentication required");

@@ -2,10 +2,7 @@ package app.services;
 
 
 import app.database.*;
-import app.database.schema.Education;
-import app.database.schema.Job;
-import app.database.schema.Profile;
-import app.database.schema.Skill;
+import app.database.schema.*;
 import app.global.settingsEnum.birthdayView;
 import org.hibernate.exception.ConstraintViolationException;
 import org.linkSphere.annotations.Inject;
@@ -15,30 +12,33 @@ import java.util.NoSuchElementException;
 
 public class UserService {
     @Inject(dependency = "userDAO")
-    private static UserDAO userDao;
+    private static UserDAO userDAO;
 
     @Inject(dependency = "jobDAO")
-    private static JobDAO jobDao;
+    private static JobDAO jobDAO;
 
     @Inject(dependency = "profileDAO")
-    private static ProfileDAO profileDao;
+    private static ProfileDAO profileDAO;
 
     @Inject(dependency = "educationDAO")
-    private static EducationDAO educationDao;
+    private static EducationDAO educationDAO;
 
     @Inject(dependency = "skillsDAO")
     private static SkillsDAO skillsDAO;
 
+    @Inject(dependency = "contactDAO")
+    private static ContactDAO contactDAO;
+
     public static boolean doesUserExist(long userID) {
-        return userDao.doesUserExist(userID);
+        return userDAO.doesUserExist(userID);
     }
 
     public static List<Job> getUserJobsById(long userID) {
-        return jobDao.getUserJobs(userID);
+        return jobDAO.getUserJobs(userID);
     }
 
     public static List<Education> getUserEducationsById(long userID) {
-        return educationDao.getUserEducations(userID);
+        return educationDAO.getUserEducations(userID);
     }
 
     public static List<Skill> getUserSkillsById(long userID) {
@@ -46,11 +46,11 @@ public class UserService {
     }
 
     public static Profile getUserProfileById(long userID) {
-        return profileDao.getUserProfile(userID);
+        return profileDAO.getUserProfile(userID);
     }
 
     private static boolean doesUserHaveProfile(long userID) {
-        return profileDao.doesUserHaveProfile(userID);
+        return profileDAO.doesUserHaveProfile(userID);
     }
 
     public static void updateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode, Long birthday, birthdayView birthdaySetting, String phoneNumber, String bio) throws NoSuchElementException {
@@ -58,17 +58,17 @@ public class UserService {
             if (birthday != null && birthdaySetting == null) {
                 birthdaySetting = birthdayView.MY_CONNECTIONS;
             }
-            profileDao.UpdateUserInformation(userID, firstName, lastName, nickname, countryCode, birthday, birthdaySetting, phoneNumber, bio);
+            profileDAO.UpdateUserInformation(userID, firstName, lastName, nickname, countryCode, birthday, birthdaySetting, phoneNumber, bio);
         } else {
             if (firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank() || nickname == null || nickname.isBlank() || countryCode == 0) {
                 throw new IllegalArgumentException("First name and Last name and nickname and country code can not be null or 0");
             }
-            profileDao.createUserProfile(userID, firstName, lastName, nickname, countryCode);
+            profileDAO.createUserProfile(userID, firstName, lastName, nickname, countryCode);
         }
     }
 
     public static void registerNewJobForUser(long userID, long companyID, Job jobData) throws NoSuchElementException, ConstraintViolationException {
-        jobDao.createNewJob(userID, companyID, jobData);
+        jobDAO.createNewJob(userID, companyID, jobData);
     }
 
     public static void updateExistingJob(Long userID, Long id, Job jobData) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException, IllegalAccessError {
@@ -81,7 +81,7 @@ public class UserService {
         if ((title == null && description == null && company == null && startDate == null && endDate == null)) {
             throw new IllegalArgumentException();
         }
-        jobDao.updateExistingJobByID(userID, id, jobData);
+        jobDAO.updateExistingJobByID(userID, id, jobData);
     }
 
     public static void registerNewEducation(long userID, Education education) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
@@ -96,7 +96,7 @@ public class UserService {
             throw new IllegalArgumentException("Required fields not set");
         }
 
-        educationDao.registerNewEducation(userID, education);
+        educationDAO.registerNewEducation(userID, education);
     }
 
     public static void updateExistingEducation(long userID, long id, Education education) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
@@ -110,7 +110,7 @@ public class UserService {
             throw new IllegalArgumentException("at lease one field shouldn't be null.");
         }
 
-        educationDao.updateExistingEducation(userID, id, education);
+        educationDAO.updateExistingEducation(userID, id, education);
     }
 
     public static void registerNewSkill(long userID, Skill skill) throws IllegalArgumentException, ConstraintViolationException {
@@ -126,5 +126,18 @@ public class UserService {
 
     public static void removeSkill(long userID, Long id) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
         skillsDAO.removeSkill(userID, id);
+    }
+
+    public static void registerNewContact(long userID, Contact contact) throws IllegalArgumentException, ConstraintViolationException {
+        String type = contact.getType();
+        String url = contact.getUrl();
+        if (type == null || url == null) {
+            throw new IllegalArgumentException("Required fields not set");
+        }
+        contactDAO.registerNewContact(userID, contact);
+    }
+
+    public static void removeContact(long userID, long id) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
+        contactDAO.removeContact(userID, id);
     }
 }
