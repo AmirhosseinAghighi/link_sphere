@@ -5,6 +5,7 @@ import app.database.*;
 import app.database.schema.Education;
 import app.database.schema.Job;
 import app.database.schema.Skill;
+import app.global.settingsEnum.birthdayView;
 import org.hibernate.exception.ConstraintViolationException;
 import org.linkSphere.annotations.Inject;
 
@@ -39,13 +40,20 @@ public class UserService {
         return educationDao.getUserEducations(userID);
     }
 
+    public static List<Skill> getUserSkillsById(long userID) {
+        return skillsDAO.getUserSkills(userID);
+    }
+
     private static boolean doesUserHaveProfile(long userID) {
         return profileDao.doesUserHaveProfile(userID);
     }
 
-    public static void updateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode, String bio) throws NoSuchElementException {
+    public static void updateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode, Long birthday, birthdayView birthdaySetting, String phoneNumber, String bio) throws NoSuchElementException {
         if (doesUserHaveProfile(userID)) {
-            profileDao.UpdateUserInformation(userID, firstName, lastName, nickname, countryCode, bio);
+            if (birthday != null && birthdaySetting == null) {
+                birthdaySetting = birthdayView.MY_CONNECTIONS;
+            }
+            profileDao.UpdateUserInformation(userID, firstName, lastName, nickname, countryCode, birthday, birthdaySetting, phoneNumber, bio);
         } else {
             if (firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank() || nickname == null || nickname.isBlank() || countryCode == 0) {
                 throw new IllegalArgumentException("First name and Last name and nickname and country code can not be null or 0");

@@ -2,6 +2,8 @@ package app.views.profile;
 
 import app.database.schema.Education;
 import app.database.schema.Job;
+import app.database.schema.Skill;
+import app.global.settingsEnum.birthdayView;
 import app.services.AuthService;
 import app.services.UserService;
 import app.database.schema.Profile;
@@ -38,8 +40,13 @@ public class ProfileInformation {
 
         List<Job> jobs = UserService.getUserJobsById(userID);
         List<Education> educations = UserService.getUserEducationsById(userID);
+        List<Skill> skills = UserService.getUserSkillsById(userID);
 
-        res.send(200, "{\"code\": 200, \"jobs\": " + jobs.toString() + ", \"educations\": " + educations.toString() + "}");
+        res.send(200, "{\"code\": 200" +
+                ", \"jobs\": " + jobs.toString() +
+                ", \"educations\": "+ educations.toString() +
+                ", \"skills\": " + skills.toString() +
+                "}");
     }
 
     @Post("/update")
@@ -57,14 +64,17 @@ public class ProfileInformation {
         String lastName = data.getLastName();
         String nickName = data.getNickName();
         int countryCode = data.getCountryCode();
+        Long birthday = data.getBirthday();
+        birthdayView birthdaySetting = data.getBirthdaySetting();
+        String phoneNumber = data.getPhoneNumber();
         String bio = data.getBio();
-        if ((firstName != null && firstName.length() > 20) || (lastName != null && lastName.length() > 40) || (nickName != null && nickName.length() > 40) || (countryCode != 0 && CountryCode.getByCode(countryCode) == null) || (bio != null && bio.length() > 220)) {
+        if ((firstName != null && firstName.length() > 20) || (lastName != null && lastName.length() > 40) || (nickName != null && nickName.length() > 40) || (countryCode != 0 && CountryCode.getByCode(countryCode) == null) || (bio != null && bio.length() > 220) || (phoneNumber != null && !phoneNumber.matches("[0-9]+"))) {
             res.sendError(400, "Bad Request");
             return;
         }
 
         try {
-            UserService.updateUserInformation(userID, firstName, lastName, nickName, countryCode, bio);
+            UserService.updateUserInformation(userID, firstName, lastName, nickName, countryCode, birthday, birthdaySetting, phoneNumber, bio);
             res.sendMessage("Successfully updated profile");
             logger.debug("Updating profile");
         } catch (NoSuchElementException e) {
