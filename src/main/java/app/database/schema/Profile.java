@@ -18,6 +18,14 @@ public class Profile {
     @JoinColumn(name = "profile_id")
     private Collection<Education> educations;
 
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private Collection<Job> jobs;
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private Collection<Skill> skills;
+
     @Column(name = "open_to_work")
     private boolean openToWork;
 

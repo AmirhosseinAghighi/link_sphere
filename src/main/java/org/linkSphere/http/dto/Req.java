@@ -177,6 +177,16 @@ public class Req {
         }
     }
 
+    public HashMap<String, String> getQueryParameters() {
+        HashMap<String, String> queryParameters = new HashMap<>();
+        String[] queries = getQuery().split("&");
+        for (String queryParameter : queries) {
+            String[] keyValue = queryParameter.split("=");
+            queryParameters.put(keyValue[0], keyValue[1]);
+        }
+        return queryParameters;
+    }
+
     public RequestMethodTypes getMethod() {
         return method;
     }
