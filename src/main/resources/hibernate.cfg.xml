@@ -26,5 +26,6 @@
         <mapping class="app.database.schema.Company"/>
         <mapping class="app.database.schema.Skill"/>
         <mapping class="app.database.schema.Contact"/>
+        <mapping class="app.database.schema.Follow"/>
     </session-factory>
 </hibernate-configuration>

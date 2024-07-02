@@ -7,6 +7,7 @@ import app.global.settingsEnum.birthdayView;
 import org.hibernate.exception.ConstraintViolationException;
 import org.linkSphere.annotations.Inject;
 
+import java.util.DuplicateFormatFlagsException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -28,6 +29,9 @@ public class UserService {
 
     @Inject(dependency = "contactDAO")
     private static ContactDAO contactDAO;
+
+    @Inject(dependency = "followDAO")
+    private static FollowDAO followDAO;
 
     public static boolean doesUserExist(long userID) {
         return userDAO.doesUserExist(userID);
@@ -139,5 +143,25 @@ public class UserService {
 
     public static void removeContact(long userID, long id) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
         contactDAO.removeContact(userID, id);
+    }
+
+    public static void registerNewFollowing(long userID, long followingID) throws NoSuchElementException, IllegalArgumentException {
+        if (userID == followingID) {
+            throw new IllegalArgumentException("User id can not be same as your self user id");
+        }
+
+        followDAO.registerNewFollowing(userID, followingID);
+    }
+
+    public static void removeFollowing(long userID, long followingID) throws NoSuchElementException, IllegalArgumentException, DuplicateFormatFlagsException {
+        System.out.println(userID + " -> " + followingID);
+        if (userID == followingID) {
+            throw new IllegalArgumentException("User id can not be same as your self user id");
+        }
+        followDAO.removeFollowing(0, userID, followingID);
+    }
+
+    public static void removeFollowing(long id) throws NoSuchElementException {
+        followDAO.removeFollowing(id, 0, 0);
     }
 }
