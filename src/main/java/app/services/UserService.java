@@ -3,9 +3,10 @@ package app.services;
 
 import app.database.*;
 import app.database.schema.*;
-import app.global.settingsEnum.birthdayView;
+import app.global.settingsEnum.BirthdayView;
 import org.hibernate.exception.ConstraintViolationException;
 import org.linkSphere.annotations.Inject;
+import org.linkSphere.exceptions.duplicateException;
 
 import java.util.DuplicateFormatFlagsException;
 import java.util.List;
@@ -33,6 +34,9 @@ public class UserService {
     @Inject(dependency = "followDAO")
     private static FollowDAO followDAO;
 
+    @Inject(dependency = "connectionDAO")
+    private static ConnectionDAO connectionDAO;
+
     public static boolean doesUserExist(long userID) {
         return userDAO.doesUserExist(userID);
     }
@@ -57,10 +61,10 @@ public class UserService {
         return profileDAO.doesUserHaveProfile(userID);
     }
 
-    public static void updateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode, Long birthday, birthdayView birthdaySetting, String phoneNumber, String bio) throws NoSuchElementException {
+    public static void updateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode, Long birthday, BirthdayView birthdaySetting, String phoneNumber, String bio) throws NoSuchElementException {
         if (doesUserHaveProfile(userID)) {
             if (birthday != null && birthdaySetting == null) {
-                birthdaySetting = birthdayView.MY_CONNECTIONS;
+                birthdaySetting = BirthdayView.MY_CONNECTIONS;
             }
             profileDAO.UpdateUserInformation(userID, firstName, lastName, nickname, countryCode, birthday, birthdaySetting, phoneNumber, bio);
         } else {
@@ -163,5 +167,36 @@ public class UserService {
 
     public static void removeFollowing(long id) throws NoSuchElementException {
         followDAO.removeFollowing(id, 0, 0);
+    }
+
+    public static void requestNewConnection(Long userID, Long connectedUser, String note) throws NoSuchElementException, IllegalArgumentException, duplicateException {
+        if (note.length() > 500) {
+            throw new IllegalArgumentException("Note is too long");
+        }
+
+        if (userID == null || connectedUser == null)
+            throw new IllegalArgumentException("Bad Request");
+
+        if (userID.equals(connectedUser))
+            throw new IllegalArgumentException("you can't send request to yourself.");
+
+        connectionDAO.requestNewConnection(userID, connectedUser, note);
+    }
+
+    public static void responseToConnectionRequest(Long userID, Long connectedUser, boolean accepted) throws NoSuchElementException, ConstraintViolationException {
+        if (userID == null || connectedUser == null)
+            throw new IllegalArgumentException("Bad Request");
+
+        if (userID.equals(connectedUser))
+            throw new IllegalArgumentException("you can't send response to yourself.");
+
+        connectionDAO.responseToConnectionRequest(userID, connectedUser, accepted);
+    }
+
+    public static void removeConnection(Long userID, Long connectedUser) throws NoSuchElementException, ConstraintViolationException {
+        if (userID == null || connectedUser == null || userID.equals(connectedUser))
+            throw new IllegalArgumentException("Bad Request");
+
+        connectionDAO.removeConnection(userID, connectedUser);
     }
 }
