@@ -1,7 +1,7 @@
 package app.views.profile;
 
 import app.database.schema.*;
-import app.global.settingsEnum.birthdayView;
+import app.global.settingsEnum.BirthdayView;
 import app.services.AuthService;
 import app.services.UserService;
 import app.global.CountryCode;
@@ -66,7 +66,7 @@ public class ProfileInformation {
         String nickName = data.getNickName();
         int countryCode = data.getCountryCode();
         Long birthday = data.getBirthday();
-        birthdayView birthdaySetting = data.getBirthdaySetting();
+        BirthdayView birthdaySetting = data.getBirthdaySetting();
         String phoneNumber = data.getPhoneNumber();
         String bio = data.getBio();
         if ((firstName != null && firstName.length() > 20) || (lastName != null && lastName.length() > 40) || (nickName != null && nickName.length() > 40) || (countryCode != 0 && CountryCode.getByCode(countryCode) == null) || (bio != null && bio.length() > 220) || (phoneNumber != null && !phoneNumber.matches("[0-9]+"))) {

@@ -2,7 +2,7 @@ package app.database;
 
 import app.database.schema.Profile;
 import app.database.schema.User;
-import app.global.settingsEnum.birthdayView;
+import app.global.settingsEnum.BirthdayView;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -55,7 +55,7 @@ public class ProfileDAO {
         return false;
     }
 
-    public void UpdateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode, Long birthday, birthdayView birthdaySetting, String phoneNumber, String bio) throws NoSuchElementException {
+    public void UpdateUserInformation(long userID, String firstName, String lastName, String nickname, int countryCode, Long birthday, BirthdayView birthdaySetting, String phoneNumber, String bio) throws NoSuchElementException {
         Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();

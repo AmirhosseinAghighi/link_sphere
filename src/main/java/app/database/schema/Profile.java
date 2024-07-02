@@ -1,7 +1,7 @@
 package app.database.schema;
 
 
-import app.global.settingsEnum.birthdayView;
+import app.global.settingsEnum.BirthdayView;
 import jakarta.persistence.*;
 
 import java.util.Collection;
@@ -45,7 +45,7 @@ public class Profile {
     private Long birthday;
 
     @Column
-    private birthdayView birthdaySetting;
+    private BirthdayView birthdaySetting;
 
     @Column(length = 40)
     private String phoneNumber;
@@ -136,11 +136,11 @@ public class Profile {
         this.birthday = birthday;
     }
 
-    public birthdayView getBirthdaySetting() {
+    public BirthdayView getBirthdaySetting() {
         return birthdaySetting;
     }
 
-    public void setBirthdaySetting(birthdayView birthdaySetting) {
+    public void setBirthdaySetting(BirthdayView birthdaySetting) {
         this.birthdaySetting = birthdaySetting;
     }
 
