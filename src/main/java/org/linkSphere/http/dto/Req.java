@@ -179,7 +179,11 @@ public class Req {
 
     public HashMap<String, String> getQueryParameters() {
         HashMap<String, String> queryParameters = new HashMap<>();
-        String[] queries = getQuery().split("&");
+        String queriesString = getQuery();
+        if (queriesString == null) {
+            return queryParameters;
+        }
+        String[] queries = queriesString.split("&");
         for (String queryParameter : queries) {
             String[] keyValue = queryParameter.split("=");
             queryParameters.put(keyValue[0], keyValue[1]);
