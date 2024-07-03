@@ -28,5 +28,7 @@
         <mapping class="app.database.schema.Contact"/>
         <mapping class="app.database.schema.Follow"/>
         <mapping class="app.database.schema.Connection"/>
+        <mapping class="app.database.schema.Post"/>
+        <mapping class="app.database.schema.Like"/>
     </session-factory>
 </hibernate-configuration>

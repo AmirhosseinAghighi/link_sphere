@@ -37,6 +37,12 @@ public class UserService {
     @Inject(dependency = "connectionDAO")
     private static ConnectionDAO connectionDAO;
 
+    @Inject(dependency = "postDAO")
+    private static PostDAO postDAO;
+
+    @Inject(dependency = "likeDAO")
+    private static LikeDAO likeDAO;
+
     public static boolean doesUserExist(long userID) {
         return userDAO.doesUserExist(userID);
     }
@@ -198,5 +204,43 @@ public class UserService {
             throw new IllegalArgumentException("Bad Request");
 
         connectionDAO.removeConnection(userID, connectedUser);
+    }
+
+    public static void createNewPost(Long userID, String text) throws ConstraintViolationException, NoSuchElementException, IllegalArgumentException {
+        if (userID == null || text == null || text.isBlank() || text.length() > 3000)
+            throw new IllegalArgumentException("Bad Request");
+
+        postDAO.createNewPost(userID, text);
+    }
+
+    public static Post getPost(Long postID) throws IllegalArgumentException, NoSuchElementException, ConstraintViolationException {
+        if (postID == null) {
+            throw new IllegalArgumentException("Bad Request");
+        }
+
+        return postDAO.getPost(postID);
+    }
+
+    public static void removePost(Long postID) throws ConstraintViolationException, NoSuchElementException {
+        if (postID == null)
+            throw new IllegalArgumentException("Bad Request");
+
+        postDAO.removePost(postID);
+    }
+
+    public static void toggleLikePost(Long userID, Long postID) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {
+        if (userID == null || postID == null) {
+            throw new IllegalArgumentException("Bad Request");
+        }
+
+        likeDAO.toggleLikePost(userID, postID);
+    }
+
+    public static List<Like> getLikes(Long postID) {
+        if (postID == null) {
+            throw new IllegalArgumentException("Bad Request");
+        }
+
+        return likeDAO.getLikesOnPost(postID);
     }
 }
