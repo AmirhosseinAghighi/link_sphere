@@ -58,7 +58,7 @@ public class Signup {
             logger.info("New user signed up successfully");
         } catch (Exception e) { // catch any error received like username or mail or password or first name were null.
             logger.debug("New User Sign Up Request Received And Ignored! | message: ", e.getMessage(), "ip: ", req.getIp());
-            res.sendError(400, "Bad Request");
+            res.sendError(409, "Bad Request");
         }
     }
 
