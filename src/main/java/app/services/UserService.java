@@ -63,7 +63,7 @@ public class UserService {
         return profileDAO.getUserProfile(userID);
     }
 
-    private static boolean doesUserHaveProfile(long userID) {
+    public static boolean doesUserHaveProfile(long userID) {
         return profileDAO.doesUserHaveProfile(userID);
     }
 

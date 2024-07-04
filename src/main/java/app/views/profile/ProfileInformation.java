@@ -35,6 +35,11 @@ public class ProfileInformation {
             return;
         }
 
+        if (!UserService.doesUserHaveProfile(userID)) {
+            res.sendError(404, "User Profile not found.");
+            return;
+        }
+
         List<Job> jobs = UserService.getUserJobsById(userID);
         List<Education> educations = UserService.getUserEducationsById(userID);
         List<Skill> skills = UserService.getUserSkillsById(userID);
