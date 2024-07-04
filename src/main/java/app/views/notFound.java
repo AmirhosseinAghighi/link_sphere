@@ -9,6 +9,6 @@ import org.linkSphere.http.dto.Res;
 public class notFound {
     @Get
     public void get(Req req, Res res) {
-        res.send(404, "404 - Custom Not Found Page");
+        res.send(404, "{\"code\":404,\"message\":\"404 - Custom Not Found Page\"}");
     }
 }
