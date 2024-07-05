@@ -61,7 +61,7 @@ public class ProfileInformation {
 
         // TODO: this option should be limited to loged in users to handle birthday and ... settings
         Profile profile = UserService.getUserProfileById(userID);
-
+        System.out.println(jobs.toString());
         res.send(200, "{\"code\": 200" +
                 ", \"username\": \"" + username + "\"" +
                 ", \"jobs\": " + jobs.toString() +

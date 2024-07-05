@@ -96,7 +96,7 @@ public class Job {
         return "{" +
                 "\"id\": " + id +
                 ", \"title\": \"" + title + '"' +
-                ", \"company\": " + company +
+                ", \"company\": " + companyObject.toString() +
                 ", \"startDate\": " + startDate +
                 ", \"endDate\": " + endDate +
                 ", \"description\": \"" + description + '"' +

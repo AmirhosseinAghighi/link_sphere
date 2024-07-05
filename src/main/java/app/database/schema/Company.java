@@ -17,4 +17,14 @@ public class Company {
 
     @Column
     private String description;
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\": " + id +
+                ", \"name\": \"" + name + '"' +
+                ", \"location\": " + location +
+                ", \"description\": \"" + description + '"' +
+                '}';
+    }
 }
