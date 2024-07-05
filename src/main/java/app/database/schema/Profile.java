@@ -154,10 +154,14 @@ public class Profile {
 
     @Override
     public String toString() {
+        int num = 1;
+        if (birthdaySetting != null) {
+            num = birthdaySetting.getNumber();
+        }
         return "{" +
                 "\"bio\": \"" + bio + '"' +
                 ", \"phoneNumber\": \"" + phoneNumber + '"' +
-                ", \"birthdaySetting\": " + birthdaySetting.getNumber() +
+                ", \"birthdaySetting\": " + num +
                 ", \"birthday\": " + birthday +
                 ", \"countryCode\": " + countryCode +
                 ", \"nickName\": \"" + nickName + '"' +
