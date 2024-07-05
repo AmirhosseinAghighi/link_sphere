@@ -27,6 +27,19 @@ public class ProfileInformation {
     private static Gson gson;
     private static Logger logger;
 
+    @Get("/username/{userID}")
+    public void getUsername(Req req, Res res) {
+        long userID = Long.parseLong(req.getDynamicParameters().get("userID"));
+        System.out.println(userID);
+        if (!UserService.doesUserExist(userID)) {
+            res.sendError(404, "User not found.");
+            return;
+        }
+
+        String username = UserService.getUsernameById(userID);
+        res.send(200, "{\"code\": 200, \"username\": \"" + username + "\"}");
+    }
+
     @Get("/{userID}")
     public void getProfile(Req req, Res res) {
         long userID = Long.parseLong(req.getDynamicParameters().get("userID"));
@@ -40,6 +53,7 @@ public class ProfileInformation {
             return;
         }
 
+        String username = UserService.getUsernameById(userID);
         List<Job> jobs = UserService.getUserJobsById(userID);
         List<Education> educations = UserService.getUserEducationsById(userID);
         List<Skill> skills = UserService.getUserSkillsById(userID);
@@ -48,6 +62,7 @@ public class ProfileInformation {
         Profile profile = UserService.getUserProfileById(userID);
 
         res.send(200, "{\"code\": 200" +
+                ", \"username\": \"" + username + "\"" +
                 ", \"jobs\": " + jobs.toString() +
                 ", \"educations\": "+ educations.toString() +
                 ", \"skills\": " + skills.toString() +

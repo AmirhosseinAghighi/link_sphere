@@ -109,6 +109,21 @@ public class UserDAO {
         return false;
     }
 
+    public String getUsernameByID(long userID) {
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            session.beginTransaction();
+            User userObject = (User) session.get(User.class, userID);
+            if (userObject != null)
+                return userObject.getUsername();
+        } catch (NoSuchElementException e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return "";
+    }
+
 //    public boolean doesUserExist(String username) {
 //
 //    }

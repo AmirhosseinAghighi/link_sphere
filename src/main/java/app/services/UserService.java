@@ -47,6 +47,8 @@ public class UserService {
         return userDAO.doesUserExist(userID);
     }
 
+    public static String getUsernameById(long userID) {return userDAO.getUsernameByID(userID);}
+
     public static List<Job> getUserJobsById(long userID) {
         return jobDAO.getUserJobs(userID);
     }
