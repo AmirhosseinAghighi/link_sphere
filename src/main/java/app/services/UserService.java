@@ -47,7 +47,9 @@ public class UserService {
         return userDAO.doesUserExist(userID);
     }
 
-    public static String getUsernameById(long userID) {return userDAO.getUsernameByID(userID);}
+    public static String getUsernameById(long userID) {
+        return userDAO.getUsernameByID(userID);
+    }
 
     public static List<Job> getUserJobsById(long userID) {
         return jobDAO.getUserJobs(userID);
@@ -164,6 +166,13 @@ public class UserService {
             throw new IllegalArgumentException("Required fields not set");
         }
         contactDAO.registerNewContact(userID, contact);
+    }
+
+    public static List<Contact> getUserContacts(Long userID) {
+        if (userID == null) {
+            throw new IllegalArgumentException("Bad Request");
+        }
+        return contactDAO.getUserContacts(userID);
     }
 
     public static void removeContact(long userID, long id) throws NoSuchElementException, ConstraintViolationException, IllegalArgumentException {

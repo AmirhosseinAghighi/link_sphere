@@ -57,6 +57,7 @@ public class ProfileInformation {
         List<Job> jobs = UserService.getUserJobsById(userID);
         List<Education> educations = UserService.getUserEducationsById(userID);
         List<Skill> skills = UserService.getUserSkillsById(userID);
+        List<Contact> contacts = UserService.getUserContacts(userID);
         Long connectionCount = UserService.countConnections(userID);
 
         Profile profile = UserService.getUserProfileById(userID);
@@ -77,6 +78,7 @@ public class ProfileInformation {
                 ", \"educations\": "+ educations.toString() +
                 ", \"skills\": " + skills.toString() +
                 ", \"profile\": " + profile.toString() +
+                ", \"profile\": " + contacts.toString() +
                 ", \"birthday\": " + birthday +
                 ", \"connections\": " + connectionCount +
                 "}");

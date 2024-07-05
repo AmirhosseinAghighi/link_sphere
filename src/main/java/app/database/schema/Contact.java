@@ -54,7 +54,7 @@ public class Contact {
 
     @Override
     public String toString() {
-        return "Contracts{" +
+        return "{" +
                 "\"url\"=\"" + url + '"' +
                 ", \"type\"=\"" + type + '"' +
                 ", \"id\"=" + id +
