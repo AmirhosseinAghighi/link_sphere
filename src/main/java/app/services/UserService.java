@@ -83,6 +83,19 @@ public class UserService {
         }
     }
 
+    public static boolean isUserAllowedToGetBirthday(Long userID, BirthdayView birthdaySetting, Long secondaryID) {
+        if (userID == null || birthdaySetting == null || secondaryID == null)
+            throw new IllegalArgumentException("Bad Request");
+
+        if (birthdaySetting == BirthdayView.MY_CONNECTIONS) {
+            return areTheseTwoConnected(userID, secondaryID);
+        } else if (birthdaySetting == BirthdayView.MY_NETWORK) {
+            return true; // TODO: find efficient way to do this.
+        } else {
+            return false;
+        }
+    }
+
     public static void registerNewJobForUser(long userID, long companyID, Job jobData) throws NoSuchElementException, ConstraintViolationException {
         jobDAO.createNewJob(userID, companyID, jobData);
     }
@@ -213,6 +226,17 @@ public class UserService {
             throw new IllegalArgumentException("Bad Request");
 
         return connectionDAO.countConnections(userID);
+    }
+
+    public static boolean areTheseTwoConnected(Long userID, Long connectedToID) {
+        if (userID == null || connectedToID == null)
+            throw new IllegalArgumentException("Bad Request");
+
+        if (userID.equals(connectedToID)) {
+            return true;
+        }
+
+        return connectionDAO.haveConnectionWith(userID, connectedToID);
     }
 
     public static void createNewPost(Long userID, String text) throws ConstraintViolationException, NoSuchElementException, IllegalArgumentException {

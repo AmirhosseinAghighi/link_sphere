@@ -161,8 +161,8 @@ public class Profile {
         return "{" +
                 "\"bio\": \"" + bio + '"' +
                 ", \"phoneNumber\": \"" + phoneNumber + '"' +
-                ", \"birthdaySetting\": " + num +
-                ", \"birthday\": " + birthday +
+//                ", \"birthdaySetting\": " + num +
+//                ", \"birthday\": " + birthday +
                 ", \"countryCode\": " + countryCode +
                 ", \"nickName\": \"" + nickName + '"' +
                 ", \"lastName\": \"" + lastName + '"' +

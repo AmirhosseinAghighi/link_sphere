@@ -59,15 +59,25 @@ public class ProfileInformation {
         List<Skill> skills = UserService.getUserSkillsById(userID);
         Long connectionCount = UserService.countConnections(userID);
 
-        // TODO: this option should be limited to loged in users to handle birthday and ... settings
         Profile profile = UserService.getUserProfileById(userID);
-        System.out.println(jobs.toString());
+
+        Long birthday = null;
+        if (profile.getBirthday() != null && AuthService.isAuthorized(req.getCookies())) {
+            Claims accessToken = JWT.parseToken(req.getCookies().get("accessToken"));
+            long secondaryID = Long.parseLong(accessToken.getSubject());
+            if (secondaryID == userID ||UserService.isUserAllowedToGetBirthday(userID, profile.getBirthdaySetting(), secondaryID)) {
+                birthday = profile.getBirthday();
+            }
+        }
+
+        // TODO: this option should be limited to loged in users to handle birthday and ... settings
         res.send(200, "{\"code\": 200" +
                 ", \"username\": \"" + username + "\"" +
                 ", \"jobs\": " + jobs.toString() +
                 ", \"educations\": "+ educations.toString() +
                 ", \"skills\": " + skills.toString() +
                 ", \"profile\": " + profile.toString() +
+                ", \"birthday\": " + birthday +
                 ", \"connections\": " + connectionCount +
                 "}");
     }
