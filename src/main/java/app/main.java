@@ -115,7 +115,7 @@ class hi {
 
         - POST `/profile/update`: updating profile information such as firstname, lastname, nickname, country and bio
             |
-            - Request Body Schema: {"firstName": "test", "lastName": "test", "nickname": "test", countryCode: 364, "bio": "test"}
+            - Request Body Schema: {"firstName": "test", "lastName": "test", "nickname": "test", "countryCode": 364, "bio": "test"}
                 | firstName, lastName, nickname, countryCode are required for first time ( it will create the profile row in db )
             |
             - Response: json responses;
