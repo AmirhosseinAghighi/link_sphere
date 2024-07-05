@@ -21,7 +21,7 @@ public class PostDAO {
         sessionFactory = dao.getSessionFactory();
     }
 
-    public void createNewPost(long userID, String text) throws ConstraintViolationException, NoSuchElementException {
+    public Long createNewPost(long userID, String text) throws ConstraintViolationException, NoSuchElementException {
         Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
@@ -33,6 +33,7 @@ public class PostDAO {
             Post post = new Post(user, text);
             session.persist(post);
             session.getTransaction().commit();
+            return post.getId();
         } catch (ConstraintViolationException e) {
             session.getTransaction().rollback();
             throw e;

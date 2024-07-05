@@ -248,11 +248,11 @@ public class UserService {
         return connectionDAO.haveConnectionWith(userID, connectedToID);
     }
 
-    public static void createNewPost(Long userID, String text) throws ConstraintViolationException, NoSuchElementException, IllegalArgumentException {
+    public static Long createNewPost(Long userID, String text) throws ConstraintViolationException, NoSuchElementException, IllegalArgumentException {
         if (userID == null || text == null || text.isBlank() || text.length() > 3000)
             throw new IllegalArgumentException("Bad Request");
 
-        postDAO.createNewPost(userID, text);
+        return postDAO.createNewPost(userID, text);
     }
 
     public static Post getPost(Long postID) throws IllegalArgumentException, NoSuchElementException, ConstraintViolationException {
