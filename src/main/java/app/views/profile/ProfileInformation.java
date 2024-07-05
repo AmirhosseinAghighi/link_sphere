@@ -72,13 +72,14 @@ public class ProfileInformation {
         }
 
         // TODO: this option should be limited to loged in users to handle birthday and ... settings
+        System.out.println(contacts);
         res.send(200, "{\"code\": 200" +
                 ", \"username\": \"" + username + "\"" +
                 ", \"jobs\": " + jobs.toString() +
                 ", \"educations\": "+ educations.toString() +
                 ", \"skills\": " + skills.toString() +
                 ", \"profile\": " + profile.toString() +
-                ", \"profile\": " + contacts.toString() +
+                ", \"contacts\": " + contacts.toString() +
                 ", \"birthday\": " + birthday +
                 ", \"connections\": " + connectionCount +
                 "}");

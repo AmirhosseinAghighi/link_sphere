@@ -55,9 +55,9 @@ public class Contact {
     @Override
     public String toString() {
         return "{" +
-                "\"url\"=\"" + url + '"' +
-                ", \"type\"=\"" + type + '"' +
-                ", \"id\"=" + id +
+                "\"url\": \"" + url + '"' +
+                ", \"type\": \"" + type + '"' +
+                ", \"id\": " + id +
                 '}';
     }
 }
