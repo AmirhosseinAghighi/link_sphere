@@ -40,7 +40,7 @@ public class UserDAO {
         try {
             session.beginTransaction();
             List result = session.createQuery("from User where username = :username").setParameter("username", username).list();
-            return (User) result.getFirst();
+            return (User) result.get(0);
         } catch (NoSuchElementException e) {
             throw e;
         } finally {
@@ -54,7 +54,7 @@ public class UserDAO {
             session.beginTransaction();
             List result = session.createQuery("SELECT password FROM User s WHERE s.username = :username").setParameter("username", username).list();
             session.getTransaction().commit();
-            return (String) result.getFirst();
+            return (String) result.get(0);
         } catch (NoSuchElementException e) {
             throw e;
         } finally {
@@ -82,7 +82,7 @@ public class UserDAO {
         try {
             session.beginTransaction();
             Token token = (Token) session.createQuery("from Token token where token.user.id = :userID and token.token = :refreshToken")
-                    .setParameter("userID", userID).setParameter("refreshToken", oldRefreshToken).list().getFirst();
+                    .setParameter("userID", userID).setParameter("refreshToken", oldRefreshToken).list().get(0);
             token.setToken(refreshToken);
             token.setIp(ip);
             token.setUserAgent(userAgent);
