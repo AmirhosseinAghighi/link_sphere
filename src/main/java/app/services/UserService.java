@@ -208,6 +208,13 @@ public class UserService {
         connectionDAO.removeConnection(userID, connectedUser);
     }
 
+    public static Long countConnections(Long userID) throws NoSuchElementException, IllegalArgumentException {
+        if (userID == null)
+            throw new IllegalArgumentException("Bad Request");
+
+        return connectionDAO.countConnections(userID);
+    }
+
     public static void createNewPost(Long userID, String text) throws ConstraintViolationException, NoSuchElementException, IllegalArgumentException {
         if (userID == null || text == null || text.isBlank() || text.length() > 3000)
             throw new IllegalArgumentException("Bad Request");

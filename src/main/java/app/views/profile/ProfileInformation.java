@@ -57,6 +57,7 @@ public class ProfileInformation {
         List<Job> jobs = UserService.getUserJobsById(userID);
         List<Education> educations = UserService.getUserEducationsById(userID);
         List<Skill> skills = UserService.getUserSkillsById(userID);
+        Long connectionCount = UserService.countConnections(userID);
 
         // TODO: this option should be limited to loged in users to handle birthday and ... settings
         Profile profile = UserService.getUserProfileById(userID);
@@ -67,6 +68,7 @@ public class ProfileInformation {
                 ", \"educations\": "+ educations.toString() +
                 ", \"skills\": " + skills.toString() +
                 ", \"profile\": " + profile.toString() +
+                ", \"connections\": " + connectionCount +
                 "}");
     }
 

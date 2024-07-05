@@ -164,4 +164,26 @@ public class ConnectionDAO {
             session.close();
         }
     }
+
+    public Long countConnections(Long userID) {
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            session.beginTransaction();
+            Long connectionsCount = session.createQuery("SELECT COUNT(*) FROM Connection c WHERE (c.user.id = :userID OR " +
+                            "c.connectedUser.id = :userID) AND c.state != :state", Long.class)
+                    .setParameter("userID", userID)
+                    .setParameter("state", ConnectionState.ACCEPTED)
+                    .uniqueResult();
+            session.getTransaction().commit();
+            return connectionsCount;
+        } catch (ConstraintViolationException e) {
+            session.getTransaction().rollback();
+            throw e;
+        } catch (NoSuchElementException e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
 }
